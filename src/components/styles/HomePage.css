@@ -1,0 +1,45 @@
+h1 {
+  color: white;
+  font-size: 4em;
+  font: serif;
+}
+
+h2 {
+  color: white;
+}
+
+.circles {
+  display: inline-flex;
+}
+.circle-one {
+  margin: 2em;
+}
+
+.circle-two {
+  margin: 2em;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.content {
+  display: inline-block;
+  position: relative;
+  background-color: white;
+  min-height: 50vh;
+}
+
+.footer {
+  position: relative;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
