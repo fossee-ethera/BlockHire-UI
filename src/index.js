@@ -2,7 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
+import EditProfilePage from "./components/EditProfilePage";
 import * as serviceWorker from "./serviceWorker";
+import Experience from "./components/Experience";
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

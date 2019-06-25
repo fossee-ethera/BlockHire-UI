@@ -36,7 +36,7 @@ const SearchBar = () => (
 );
 
 class MenuBar extends Component {
-  state = { activeItem: "home" };
+  state = { activeItem: "profile" };
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
@@ -44,16 +44,18 @@ class MenuBar extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu inverted size="huge">
-        <Menu.Item>
-          {" "}
-          <h2>BlockHire</h2>
-        </Menu.Item>
-        <Menu.Item>
-          {" "}
-          <SearchBar />
-        </Menu.Item>
-        <Menu.Menu position="right">
+      <Menu inverted fixed size="huge">
+        <Menu.Menu position="left" style={{ marginLeft: 150 }}>
+          <Menu.Item>
+            {" "}
+            <h2>BlockHire</h2>
+          </Menu.Item>
+          <Menu.Item>
+            {" "}
+            <SearchBar />
+          </Menu.Item>
+        </Menu.Menu>
+        <Menu.Menu position="right" style={{ marginRight: 150 }}>
           <Menu.Item
             name="profile"
             active={activeItem === "profile"}
