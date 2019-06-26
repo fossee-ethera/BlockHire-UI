@@ -1,21 +1,5 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  Card,
-  Step,
-  Responsive,
-  Segment,
-  Label,
-  Modal,
-  Dropdown,
-  GridRow
-} from "semantic-ui-react";
+import { Button, Grid, Image, Segment, Label, Modal } from "semantic-ui-react";
 import Stepper from "./Stepper";
 import DocUpload from "./DocumentUploadModal";
 

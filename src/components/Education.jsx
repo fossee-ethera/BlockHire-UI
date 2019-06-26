@@ -1,21 +1,5 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  Card,
-  Step,
-  Responsive,
-  Segment,
-  Label,
-  Visibility,
-  Dropdown,
-  GridRow
-} from "semantic-ui-react";
+import { Button, Grid, Icon, Image, Segment, Label } from "semantic-ui-react";
 import Stepper from "./Stepper";
 
 class Education extends Component {

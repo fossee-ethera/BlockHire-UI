@@ -1,22 +1,7 @@
 import React, { Component } from "react";
 import "./styles/TopBar.css";
-import {
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  List,
-  Menu,
-  Dropdown,
-  Search,
-  Segment,
-  Sidebar,
-  Visibility,
-  MenuItem
-} from "semantic-ui-react";
+import { Link } from "react-router-dom";
+import { Menu, Dropdown, Search } from "semantic-ui-react";
 
 class TopBar extends Component {
   state = {};
@@ -60,21 +45,29 @@ class MenuBar extends Component {
             name="profile"
             active={activeItem === "profile"}
             onClick={this.handleItemClick}
+            as={Link}
+            to="/profile"
           />
           <Menu.Item
             name="jobs"
             active={activeItem === "jobs"}
             onClick={this.handleItemClick}
+            as={Link}
+            to="/jobs"
           />
           <Menu.Item
             name="notifications"
             active={activeItem === "notifications"}
             onClick={this.handleItemClick}
+            as={Link}
+            to="/notifications"
           />
           <Menu.Item
             name="account"
             active={activeItem === "account"}
             onClick={this.handleItemClick}
+            as={Link}
+            to="/account"
           />
           <Dropdown item text="Settings">
             <Dropdown.Menu>

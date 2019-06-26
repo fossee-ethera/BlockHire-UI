@@ -1,14 +1,12 @@
 import React from "react";
 import "./App.css";
-import HomePage from "./components/HomePage";
-import EditProfilePage from "./components/EditProfilePage";
+import Main from "./components/Main";
 
 function App() {
   return (
     <div className="App">
-      <EditProfilePage />
+      <Main />
     </div>
   );
 }
-
 export default App;

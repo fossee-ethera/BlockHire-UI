@@ -3,27 +3,19 @@ import "./styles/EditProfilePage.css";
 import {
   Button,
   Container,
-  Divider,
   Grid,
-  Header,
-  Icon,
   Image,
-  Card,
-  Menu,
-  Responsive,
   Segment,
   Label,
-  Visibility,
   Dropdown
 } from "semantic-ui-react";
-import TopBar from "./TopBar";
 import ProfileSections from "./ProfileSections";
 
 class EditProfilePage extends Component {
   render() {
     return (
       <div>
-        <TopBar />
+        {/* <TopBar /> */}
         <Container>
           <AboutContainer />
           <AddSectionToProfile />
