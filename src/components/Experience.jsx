@@ -12,11 +12,12 @@ import {
   Responsive,
   Segment,
   Label,
-  Visibility,
+  Modal,
   Dropdown,
   GridRow
 } from "semantic-ui-react";
 import Stepper from "./Stepper";
+import DocUpload from "./DocumentUploadModal";
 
 class Experience extends Component {
   state = {};
@@ -33,9 +34,11 @@ class Experience extends Component {
 const AddExperience = () => (
   <Grid>
     <Grid.Column width={11}>
-      <Label as="a" attached="top right" icon>
-        <Icon name="edit outline" />
-      </Label>
+      <Modal
+        trigger={<Label as="a" attached="top right" icon="edit outline" />}
+      >
+        <DocUpload />
+      </Modal>
       <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
     </Grid.Column>
     <Grid.Column width={5}>

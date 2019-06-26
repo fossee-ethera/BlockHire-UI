@@ -70,9 +70,7 @@ class AboutContainer extends Component {
           </Grid.Column>
           <Grid.Column width={12}>
             <div>{about.map(this.renderUser)}</div>
-            <Label as="a" attached="top right" icon>
-              <Icon name="edit outline" />
-            </Label>
+            <Label as="a" attached="top right" icon="edit outline" />
           </Grid.Column>
         </Grid>
       </Segment>
