@@ -20,7 +20,6 @@ import TopBar from "./TopBar";
 import ProfileSections from "./ProfileSections";
 
 class EditProfilePage extends Component {
-  state = {};
   render() {
     return (
       <div>
@@ -35,24 +34,51 @@ class EditProfilePage extends Component {
   }
 }
 
-const AboutContainer = () => (
-  <Segment size="large" style={{ marginTop: 50 }}>
-    <Grid>
-      <Grid.Column width={4}>
-        <Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
-      </Grid.Column>
-      <Grid.Column width={9}>
-        <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-      </Grid.Column>
-      <Grid.Column width={3}>
-        <Label as="a" attached="top right" icon>
-          <Icon name="edit outline" />
-        </Label>
-        <Image src="https://react.semantic-ui.com/images/wireframe/media-paragraph.png" />
-      </Grid.Column>
-    </Grid>
-  </Segment>
-);
+class AboutContainer extends Component {
+  state = {
+    about: []
+  };
+
+  componentDidMount() {
+    this.getUserInfo();
+  }
+
+  getUserInfo = _ => {
+    fetch("http://localhost:4000")
+      .then(response => response.json())
+      .then(response => this.setState({ about: response.data }))
+      .catch(err => console.log(err));
+  };
+
+  renderUser = ({ user_id, firstname, lastname, bio, location }) => (
+    <div key={user_id}>
+      <h2>
+        {firstname} {lastname}{" "}
+      </h2>
+      <h3>{bio}</h3>
+      <h3>{location}</h3>
+    </div>
+  );
+
+  render() {
+    const { about } = this.state;
+    return (
+      <Segment size="large" style={{ marginTop: 50 }}>
+        <Grid>
+          <Grid.Column width={4}>
+            <Image src="https://react.semantic-ui.com/images/wireframe/image.png" />
+          </Grid.Column>
+          <Grid.Column width={12}>
+            <div>{about.map(this.renderUser)}</div>
+            <Label as="a" attached="top right" icon>
+              <Icon name="edit outline" />
+            </Label>
+          </Grid.Column>
+        </Grid>
+      </Segment>
+    );
+  }
+}
 
 const AddSectionToProfile = () => (
   <Segment size="large" style={{ marginTop: 50 }}>
