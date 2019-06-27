@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./styles/TopBar.css";
 import { Link } from "react-router-dom";
 import { Menu, Dropdown, Search } from "semantic-ui-react";
 
@@ -54,6 +53,13 @@ class MenuBar extends Component {
             onClick={this.handleItemClick}
             as={Link}
             to="/jobs"
+          />
+          <Menu.Item
+            name="validation"
+            active={activeItem === "validation"}
+            onClick={this.handleItemClick}
+            as={Link}
+            to="/validation"
           />
           <Menu.Item
             name="notifications"
