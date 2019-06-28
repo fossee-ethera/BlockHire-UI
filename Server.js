@@ -26,6 +26,12 @@ app.get("/", function(req, res) {
   });
 });
 
+app.get("/validation", function(req, res) {
+  connection.query("SELECT * FROM validateRequests", function(err, results) {
+    err ? res.send(err) : res.json({ data: results });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}`);
 });

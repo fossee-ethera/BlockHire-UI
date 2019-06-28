@@ -15,7 +15,6 @@ class EditProfilePage extends Component {
   render() {
     return (
       <div>
-        {/* <TopBar /> */}
         <Container>
           <AboutContainer />
           <AddSectionToProfile />
