@@ -10,29 +10,9 @@ import {
   Icon,
   Modal
 } from "semantic-ui-react";
-import { Switch, Route, Link } from "react-router-dom";
+import { Switch, Route, Link, BrowserRouter as Router } from "react-router-dom";
 
 class Validation extends Component {
-  state = {};
-  render() {
-    return (
-      <Container>
-        <Grid>
-          <Grid.Column width={11}>
-            <h1>Sign txns</h1>
-            <RouteCertificate />
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <h1>Validation Requests</h1>
-            <ShowRequestList />
-          </Grid.Column>
-        </Grid>
-      </Container>
-    );
-  }
-}
-
-class ShowRequestList extends Component {
   constructor(props) {
     super(props);
     this.state = { activeItem: "pending", validationList: [], fullList: [] };
@@ -59,38 +39,46 @@ class ShowRequestList extends Component {
       .then(response => this.setState({ fullList: response.data }))
       .catch(err => console.log(err));
   };
-
   render() {
     const { activeItem } = this.state;
     return (
-      <div>
-        <Menu attached="top" tabular>
-          <Menu.Item
-            name="pending"
-            active={activeItem === "pending"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/validation/pending"
-          />
-          <Menu.Item
-            name="done"
-            active={activeItem === "done"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/validation/done"
-          />
-          <Menu.Item
-            name="rejected"
-            active={activeItem === "rejected"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/validation/rejected"
-          />
-        </Menu>
-        <Segment attached="bottom">
-          <RouteMenu item={this.state.validationList} />
-        </Segment>
-      </div>
+      <Container>
+        <Grid>
+          <Grid.Column width={11}>
+            <h1>Sign txns</h1>
+            <RouteCertificate />
+          </Grid.Column>
+          <Grid.Column width={5}>
+            <h1>Validation Requests</h1>
+            <Menu attached="top" tabular>
+              <Menu.Item
+                name="pending"
+                active={activeItem === "pending"}
+                onClick={this.handleItemClick}
+                as={Link}
+                to="/validation/pending"
+              />
+              <Menu.Item
+                name="done"
+                active={activeItem === "done"}
+                onClick={this.handleItemClick}
+                as={Link}
+                to="/validation/done"
+              />
+              <Menu.Item
+                name="rejected"
+                active={activeItem === "rejected"}
+                onClick={this.handleItemClick}
+                as={Link}
+                to="/validation/rejected"
+              />
+            </Menu>
+            <Segment attached="bottom">
+              <RouteMenu item={this.state.validationList} />
+            </Segment>
+          </Grid.Column>
+        </Grid>
+      </Container>
     );
   }
 }
@@ -100,85 +88,72 @@ const RouteMenu = props => (
     <Switch>
       <Route
         path="/validation/pending"
-        render={() => <ListPendingItem passed={props.item} />}
+        render={() => <RequestListItems passed={props.item} />}
       />
       <Route
         path="/validation/done"
-        render={() => <ListPendingItem passed={props.item} />}
+        render={() => <RequestListItems passed={props.item} />}
       />
       <Route
         path="/validation/rejected"
-        render={() => <ListPendingItem passed={props.item} />}
+        render={() => <RequestListItems passed={props.item} />}
       />
     </Switch>
   </React.Fragment>
 );
 
-class ListPendingItem extends Component {
+const RequestListItems = props => (
+  <List divided relaxed>
+    {props.passed.map((listItem, i) => (
+      <List.Item
+        key={i}
+        as={Link}
+        to={`/validation/${listItem.status}/${listItem.certiname}`}
+      >
+        <List.Icon name="paperclip" size="large" verticalAlign="middle" />
+        <List.Content>
+          <List.Header color="blue">{listItem.certiname}</List.Header>
+          <List.Description>sent by {listItem.sentby}</List.Description>
+        </List.Content>
+      </List.Item>
+    ))}
+  </List>
+);
+
+class DocSign extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { certname: null };
+  }
+
+  handleRejectButtonClick(e) {}
+
+  handleApproveButtonClick(e) {}
+
   render() {
     return (
-      <List divided relaxed>
-        {this.props.passed.map(listItem => (
-          <List.Item key={listItem.id} as={Link} to="/validation">
-            <List.Icon name="paperclip" size="large" verticalAlign="middle" />
-            <List.Content>
-              <List.Header color="blue">{listItem.certiname}</List.Header>
-              <List.Description>sent by {listItem.sentby}</List.Description>
-            </List.Content>
-          </List.Item>
-        ))}
-      </List>
+      <Segment.Group>
+        <h1>Pending certificate</h1>
+        <Segment>
+          <div>
+            <Header icon>
+              <Icon name="pdf file outline" />
+              Please be sure to check the document before signing it.
+            </Header>
+          </div>
+          <div>
+            <Modal trigger={<Button primary>Approve</Button>} closeIcon>
+              <ConfirmSign />
+            </Modal>
+            <Button color="red" onClick={this.handleRejectButtonClick}>
+              Reject
+            </Button>
+          </div>
+        </Segment>
+      </Segment.Group>
     );
   }
 }
-
-//after clicking listItem routing must happen
-const RouteCertificate = () => (
-  <React.Fragment>
-    <Switch>
-      <Route path="/validation/pending" component={DocSign} />
-      <Route path="/validation/done" component={DisplayDoneCertificate} />
-      <Route
-        path="/validation/rejected"
-        component={DisplayRejectedCertificate}
-      />
-    </Switch>
-  </React.Fragment>
-);
-
-const DisplayDoneCertificate = () => (
-  <Segment>
-    <h1>Validated Certificate displayed here</h1>
-  </Segment>
-);
-
-const DisplayRejectedCertificate = () => (
-  <Segment>
-    <h1>Rejected Certificate displayed here</h1>
-  </Segment>
-);
-
-const DocSign = () => (
-  <Segment.Group>
-    <Segment>
-      <h1>Certificate displayed here</h1>
-    </Segment>
-    <Segment>
-      <div>
-        <Header icon>
-          <Icon name="pdf file outline" />
-          Please be sure to check the document before signing it.
-        </Header>
-      </div>
-      <div>
-        <Modal trigger={<Button primary>Approve</Button>} closeIcon>
-          <ConfirmSign />
-        </Modal>
-        <Button color="red">Reject</Button>
-      </div>
-    </Segment>
-  </Segment.Group>
-);
 
 //modal
 const ConfirmSign = () => (
@@ -196,6 +171,32 @@ const ConfirmSign = () => (
         <Icon name="checkmark" /> Sign
       </Button>
     </Modal.Actions>
+  </Segment>
+);
+
+//after clicking listItem routing must happen
+const RouteCertificate = () => (
+  <React.Fragment>
+    <Switch>
+      <Route path="/validation/pending/" component={DocSign} />
+      <Route path="/validation/done/" component={DisplayDoneCertificate} />
+      <Route
+        path="/validation/rejected/"
+        component={DisplayRejectedCertificate}
+      />
+    </Switch>
+  </React.Fragment>
+);
+
+const DisplayDoneCertificate = () => (
+  <Segment>
+    <h1>Validated Certificate displayed here</h1>
+  </Segment>
+);
+
+const DisplayRejectedCertificate = () => (
+  <Segment>
+    <h1>Rejected Certificate displayed here</h1>
   </Segment>
 );
 

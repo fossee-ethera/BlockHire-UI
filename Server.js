@@ -32,6 +32,16 @@ app.get("/validation", function(req, res) {
   });
 });
 
+//update status of certificate
+app.post("/validation", function(req, res) {
+  connection.query(
+    "UPDATE validateRequests SET status = 'done' WHERE " + "",
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}`);
 });
