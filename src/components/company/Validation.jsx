@@ -45,11 +45,11 @@ class Validation extends Component {
       <Container>
         <Grid>
           <Grid.Column width={11}>
-            <h1>Sign txns</h1>
+            <h3>Sign txns</h3>
             <RouteCertificate />
           </Grid.Column>
           <Grid.Column width={5}>
-            <h1>Validation Requests</h1>
+            <h3>Validation Requests</h3>
             <Menu attached="top" tabular>
               <Menu.Item
                 name="pending"
@@ -120,20 +120,73 @@ const RequestListItems = props => (
   </List>
 );
 
+const RouteCertificate = () => (
+  <React.Fragment>
+    <Switch>
+      <Route path="/validation/pending/:certname" component={DocSign} />
+      <Route
+        path="/validation/done/:certname"
+        component={DisplayDoneCertificate}
+      />
+      <Route
+        path="/validation/rejected/:certname"
+        component={DisplayRejectedCertificate}
+      />
+    </Switch>
+  </React.Fragment>
+);
+
 class DocSign extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { certname: null };
+  state = { cert_name: "" };
+
+  componentDidMount() {
+    this.setState({ cert_name: this.props.match.params.certname });
   }
 
-  handleRejectButtonClick(e) {}
+  handleRejectButtonClick = e => {
+    e.preventDefault();
 
-  handleApproveButtonClick(e) {}
+    var url = "http://localhost:4000/validation";
+
+    fetch(url, {
+      method: "PUT", // or 'PUT'
+      mode: "cors",
+      body: JSON.stringify({
+        cert: this.state.cert_name,
+        stat: "rejected"
+      }), // data can be `string` or {object}!
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.body)
+      .then(response => console.log("Success:", JSON.stringify(response)))
+      .catch(error => console.error("Error:", error));
+  };
+
+  handleSignButtonClick = e => {
+    var url = "http://localhost:4000/validation";
+
+    fetch(url, {
+      method: "PUT", // or 'PUT'
+      mode: "cors",
+      body: JSON.stringify({
+        cert: this.state.cert_name,
+        stat: "done"
+      }), // data can be `string` or {object}!
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.body)
+      .then(response => console.log("Success:", JSON.stringify(response)))
+      .catch(error => console.error("Error:", error));
+  };
 
   render() {
     return (
       <Segment.Group>
-        <h1>Pending certificate</h1>
+        <h3>Pending certificate {this.props.match.params.certname}</h3>
         <Segment>
           <div>
             <Header icon>
@@ -143,7 +196,19 @@ class DocSign extends Component {
           </div>
           <div>
             <Modal trigger={<Button primary>Approve</Button>} closeIcon>
-              <ConfirmSign />
+              <Header icon="question circle outline" content="Sign Document" />
+              <Modal.Content>
+                <h3>Are you sure you want to sign this as a valid document?</h3>
+                <h3>
+                  ***Your signature will be linked with this document so make
+                  sure the document is genuine.
+                </h3>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button onClick={this.handleSignButtonClick} color="green">
+                  <Icon name="checkmark" /> Sign
+                </Button>
+              </Modal.Actions>
             </Modal>
             <Button color="red" onClick={this.handleRejectButtonClick}>
               Reject
@@ -155,48 +220,17 @@ class DocSign extends Component {
   }
 }
 
-//modal
-const ConfirmSign = () => (
-  <Segment>
-    <Header icon="question circle outline" content="Sign Document" />
-    <Modal.Content>
-      <h3>Are you sure you want to sign this as a valid document?</h3>
-      <h3>
-        ***Your signature will be linked with this document so make sure the
-        document is genuine.
-      </h3>
-    </Modal.Content>
-    <Modal.Actions>
-      <Button color="green">
-        <Icon name="checkmark" /> Sign
-      </Button>
-    </Modal.Actions>
-  </Segment>
-);
-
 //after clicking listItem routing must happen
-const RouteCertificate = () => (
-  <React.Fragment>
-    <Switch>
-      <Route path="/validation/pending/" component={DocSign} />
-      <Route path="/validation/done/" component={DisplayDoneCertificate} />
-      <Route
-        path="/validation/rejected/"
-        component={DisplayRejectedCertificate}
-      />
-    </Switch>
-  </React.Fragment>
-);
 
-const DisplayDoneCertificate = () => (
+const DisplayDoneCertificate = ({ match }) => (
   <Segment>
-    <h1>Validated Certificate displayed here</h1>
+    <h3>Validated Certificate displayed here ID: {match.params.certname} </h3>
   </Segment>
 );
 
 const DisplayRejectedCertificate = () => (
   <Segment>
-    <h1>Rejected Certificate displayed here</h1>
+    <h3>Rejected Certificate displayed here</h3>
   </Segment>
 );
 

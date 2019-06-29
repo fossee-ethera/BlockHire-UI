@@ -4,9 +4,17 @@ const mysql = require("mysql");
 const cors = require("cors");
 
 const PORT = process.env.PORT || 4000;
-
+var bodyParser = require("body-parser");
 const app = express();
+const router = express.Router();
 app.use(cors());
+app.use(bodyParser.json()); // to support JSON-encoded bodies
+app.use(
+  bodyParser.urlencoded({
+    // to support URL-encoded bodies
+    extended: true
+  })
+);
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -33,11 +41,12 @@ app.get("/validation", function(req, res) {
 });
 
 //update status of certificate
-app.post("/validation", function(req, res) {
+app.put("/validation", function(req, res) {
   connection.query(
-    "UPDATE validateRequests SET status = 'done' WHERE " + "",
-    function(err, results) {
-      err ? res.send(err) : res.json({ data: results });
+    "UPDATE `validateRequests` SET `status`=?  WHERE `certiname` =?",
+    [req.body.stat, req.body.cert],
+    function(err, results, fields) {
+      err ? res.send(err) : res.send(JSON.stringify(results));
     }
   );
 });

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "expressjs": "^1.0.1",
     "mysql": "^2.17.1",
@@ -46,5 +47,6 @@
   "bugs": {
     "url": "https://github.com/divyajyotiuk/BlockHire-UI/issues"
   },
-  "homepage": "https://github.com/divyajyotiuk/BlockHire-UI#readme"
+  "homepage": "https://github.com/divyajyotiuk/BlockHire-UI#readme",
+  "proxy": "http://localhost:4000"
 }
