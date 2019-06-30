@@ -29,7 +29,7 @@ class MenuBar extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu inverted fixed size="huge">
+      <Menu inverted fixed="top" size="huge">
         <Menu.Menu position="left" style={{ marginLeft: 150 }}>
           <Menu.Item>
             {" "}

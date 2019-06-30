@@ -34,10 +34,14 @@ app.get("/", function(req, res) {
   });
 });
 
-app.get("/validation", function(req, res) {
-  connection.query("SELECT * FROM validateRequests", function(err, results) {
-    err ? res.send(err) : res.json({ data: results });
-  });
+app.get("/certis/:sentby", function(req, res) {
+  connection.query(
+    "SELECT * FROM validateRequests WHERE `sentby` =?",
+    [req.params.sentby],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
 });
 
 //update status of certificate
@@ -49,6 +53,30 @@ app.put("/validation", function(req, res) {
       err ? res.send(err) : res.send(JSON.stringify(results));
     }
   );
+});
+
+app.delete("/validation", function(req, res) {
+  console.log(req.body);
+  connection.query(
+    "DELETE FROM `validateRequests` WHERE `certiname`=?",
+    [req.body.cert],
+    function(error, results, fields) {
+      if (error) throw error;
+      res.end("Record has been deleted!");
+    }
+  );
+});
+
+app.post("/certificate", function(req, res) {
+  var postData = req.body;
+  connection.query("INSERT INTO validateRequests SET ?", postData, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
+  });
 });
 
 app.listen(PORT, () => {
