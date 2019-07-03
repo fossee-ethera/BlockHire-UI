@@ -1,8 +1,9 @@
 import React from "react";
 import "./App.css";
-import Main from "./components/Main";
+import MainJobSeeker from "./components/jobseeker/MainJobSeeker";
 import MainCompany from "./components/company/MainCompany";
-import HomePage from "./components/HomePage";
+
+import Main from "./components/Main";
 
 function App() {
   return (

@@ -12,6 +12,27 @@ import {
 } from "semantic-ui-react";
 import { Switch, Route, Link, BrowserRouter as Router } from "react-router-dom";
 
+//import { Document, Page } from "react-pdf";
+//import { Document, Page } from "react-pdf/dist/entry.parcel";
+import { Document, Page } from "react-pdf/dist/entry.webpack";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import { callbackify } from "util";
+
+var BASE64_MARKER = ";base64,";
+
+function convertDataURIToBinary(dataURI) {
+  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  var base64 = dataURI.substring(base64Index);
+  var raw = window.atob(base64);
+  var rawLength = raw.length;
+  var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+  for (var i = 0; i < rawLength; i++) {
+    array[i] = raw.charCodeAt(i);
+  }
+  return array;
+}
+
 class Validation extends Component {
   constructor(props) {
     super(props);
@@ -43,41 +64,43 @@ class Validation extends Component {
     const { activeItem } = this.state;
     return (
       <Container>
-        <Grid>
-          <Grid.Column width={11}>
-            <h3>Sign txns</h3>
-            <RouteCertificate />
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <h3>Validation Requests</h3>
-            <Menu attached="top" tabular>
-              <Menu.Item
-                name="pending"
-                active={activeItem === "pending"}
-                onClick={this.handleItemClick}
-                as={Link}
-                to="/validation/pending"
-              />
-              <Menu.Item
-                name="done"
-                active={activeItem === "done"}
-                onClick={this.handleItemClick}
-                as={Link}
-                to="/validation/done"
-              />
-              <Menu.Item
-                name="rejected"
-                active={activeItem === "rejected"}
-                onClick={this.handleItemClick}
-                as={Link}
-                to="/validation/rejected"
-              />
-            </Menu>
-            <Segment attached="bottom">
-              <RouteMenu item={this.state.validationList} />
-            </Segment>
-          </Grid.Column>
-        </Grid>
+        <Segment style={{ marginTop: 100 }}>
+          <Grid>
+            <Grid.Column width={11}>
+              <h3>Sign txns</h3>
+              <RouteCertificate />
+            </Grid.Column>
+            <Grid.Column width={5}>
+              <h3>Validation Requests</h3>
+              <Menu attached="top" tabular>
+                <Menu.Item
+                  name="pending"
+                  active={activeItem === "pending"}
+                  onClick={this.handleItemClick}
+                  as={Link}
+                  to="/validation/pending"
+                />
+                <Menu.Item
+                  name="done"
+                  active={activeItem === "done"}
+                  onClick={this.handleItemClick}
+                  as={Link}
+                  to="/validation/done"
+                />
+                <Menu.Item
+                  name="rejected"
+                  active={activeItem === "rejected"}
+                  onClick={this.handleItemClick}
+                  as={Link}
+                  to="/validation/rejected"
+                />
+              </Menu>
+              <Segment attached="bottom">
+                <RouteMenu item={this.state.validationList} />
+              </Segment>
+            </Grid.Column>
+          </Grid>
+        </Segment>
       </Container>
     );
   }
@@ -136,12 +159,44 @@ const RouteCertificate = () => (
   </React.Fragment>
 );
 
-class DocSign extends Component {
-  state = { cert_name: "" };
+const options = {
+  cMapUrl: "cmaps/",
+  cMapPacked: true
+};
 
-  componentDidMount() {
-    this.setState({ cert_name: this.props.match.params.certname });
+class DocSign extends Component {
+  state = {
+    cert_name: "",
+    swarmId: "",
+    getFile: ""
+  };
+
+  //make changes here, props never changes
+  async componentDidMount() {
+    await this.setState({ cert_name: this.props.match.params.certname });
+    this.getSwarmId();
   }
+
+  getFileRaw = () => {
+    var url = "https://swarm-gateways.net/bzz:/" + this.state.swarmId;
+    console.log("ye hai " + url);
+
+    fetch(url)
+      .then(response => response.text())
+      .then(text => this.setState({ getFile: text }))
+      .catch(err => console.log(err));
+  };
+
+  getSwarmId = () => {
+    var url =
+      "http://localhost:4000/certificate/" + this.props.match.params.certname;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(response => this.setState({ swarmId: response.data[0].swarm_id }))
+      .then(this.getFileRaw)
+      .catch(err => console.log(err));
+  };
 
   handleRejectButtonClick = e => {
     e.preventDefault();
@@ -186,7 +241,8 @@ class DocSign extends Component {
   render() {
     return (
       <Segment.Group>
-        <h3>Pending certificate {this.props.match.params.certname}</h3>
+        {this.props.match.params.certname}
+        <DisplayCertificate item={this.state.getFile} />
         <Segment>
           <div>
             <Header icon>
@@ -221,6 +277,19 @@ class DocSign extends Component {
 }
 
 //after clicking listItem routing must happen
+
+class DisplayCertificate extends Component {
+  state = {};
+  render() {
+    return (
+      <Segment>
+        <Document file={this.props.item} options={options}>
+          <Page />
+        </Document>
+      </Segment>
+    );
+  }
+}
 
 const DisplayDoneCertificate = ({ match }) => (
   <Segment>

@@ -1,13 +1,11 @@
-//after user logs in
+//after clicking sign in
 import { BrowserRouter as Router } from "react-router-dom";
 import React from "react";
-import TopBar from "./TopBar";
-import Routes from "./Routes";
+import RegistrationRoute from "./RegistrationRoute";
 
 const Main = () => (
   <Router>
-    <TopBar />
-    <Routes />
+    <RegistrationRoute />
   </Router>
 );
 

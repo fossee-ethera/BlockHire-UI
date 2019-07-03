@@ -3,12 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@portis/web3": "^2.0.0-beta.31",
+    "web3": "^1.0.0-beta.55",
+    "@erebos/swarm-browser": "^0.8.1",
+    "@react-pdf/renderer": "^1.6.3",
+    "base-64": "^0.1.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "expressjs": "^1.0.1",
     "mysql": "^2.17.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-pdf": "^4.1.0",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
@@ -37,7 +43,9 @@
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "copy-webpack-plugin": "^5.0.3"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/divyajyotiuk/BlockHire-UI.git"

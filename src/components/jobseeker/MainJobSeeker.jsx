@@ -1,14 +1,14 @@
-//after company logs in
+//after user logs in
 import { BrowserRouter as Router } from "react-router-dom";
 import React from "react";
 import TopBar from "./TopBar";
-import MenuRoutes from "../company/MenuRoutes";
+import MenuRoutes from "../jobseeker/MenuRoutes";
 
-const MainCompany = () => (
+const MainJobSeeker = () => (
   <Router>
     <TopBar />
     <MenuRoutes />
   </Router>
 );
 
-export default MainCompany;
+export default MainJobSeeker;

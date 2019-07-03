@@ -34,6 +34,12 @@ app.get("/", function(req, res) {
   });
 });
 
+app.get("/validation", function(req, res) {
+  connection.query("SELECT * FROM validateRequests", function(err, results) {
+    err ? res.send(err) : res.json({ data: results });
+  });
+});
+
 app.get("/certis/:sentby", function(req, res) {
   connection.query(
     "SELECT * FROM validateRequests WHERE `sentby` =?",
@@ -43,6 +49,26 @@ app.get("/certis/:sentby", function(req, res) {
     }
   );
 });
+
+app.get("/certificate/:certiname", function(req, res) {
+  connection.query(
+    "SELECT swarm_id FROM validateRequests WHERE `certiname` =?",
+    [req.params.certiname],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+// app.get(
+//   "https://swarm-gateways.net/bzz:/:swarm_id",
+//   function(req, res) {
+//     res.send(req.params.swarm_id);
+//   },
+//   function(err, results) {
+//     err ? res.send(err) : res.json({ data: results });
+//   }
+// );
 
 //update status of certificate
 app.put("/validation", function(req, res) {

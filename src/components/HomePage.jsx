@@ -15,14 +15,50 @@ import {
   Sidebar,
   Visibility
 } from "semantic-ui-react";
+import { withRouter } from "react-router-dom";
+import Portis from "@portis/web3";
+import Web3 from "web3";
 
 const square = { width: 250, height: 250 };
+
+const portis = new Portis("61f1e9b2-488e-4a59-a3e3-24e855799d8d", "ropsten");
+const web3 = new Web3(portis.provider);
 
 const getWidth = () => {
   const isSSR = typeof window === "undefined";
 
   return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth;
 };
+
+const Button1 = withRouter(({ history }) => (
+  <Button
+    primary
+    type="button"
+    onClick={async () => {
+      var candidateAddress = await portis.provider.enable();
+      if (candidateAddress.length > 0) history.push("/JobSeekerRegistration");
+      //}
+      //return result;
+    }}
+  >
+    Job Seeker
+  </Button>
+));
+
+const Button2 = withRouter(({ history }) => (
+  <Button
+    primary
+    type="button"
+    onClick={async () => {
+      var companyAddress = await portis.provider.enable();
+      if (companyAddress.length > 0) history.push("/CompanyRegistration");
+      //}
+      //return result;
+    }}
+  >
+    Job Seeker
+  </Button>
+));
 
 class HomePage extends Component {
   state = {};
@@ -32,7 +68,7 @@ class HomePage extends Component {
         <header className="App-header">
           <Container text>
             <Header>
-              <h1>BlockHire</h1>
+              <h1>Geth-Hired</h1>
               <h2>Sign In as</h2>
             </Header>
           </Container>
@@ -65,7 +101,7 @@ const HeaderUserSignIn = () => (
     <Header.Subheader style={{ fontSize: 18 }}>
       Looking for jobs?
     </Header.Subheader>
-    <Button primary>Job Seeker</Button>
+    <Button1 />
   </Header>
 );
 
@@ -75,7 +111,7 @@ const HeaderCompanySignIn = () => (
     <Header.Subheader style={{ fontSize: 18 }}>
       Are you a Validator?
     </Header.Subheader>
-    <Button primary>Company</Button>
+    <Button2 />
   </Header>
 );
 
