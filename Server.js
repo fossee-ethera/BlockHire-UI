@@ -28,10 +28,14 @@ connection.connect(function(err) {
 });
 
 //require("./routes/html-routes")(app, connection);
-app.get("/Category", function(req, res) {
-  connection.query("SELECT * FROM Category", function(err, results) {
-    err ? res.send(err) : res.json({ data: results });
-  });
+app.get("/Category/:wallet_addr", function(req, res) {
+  connection.query(
+    "select category from Category where wallet_addr=?",
+    [req.params.wallet_addr],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
 });
 
 // app.get("/validation", function(req, res) {
@@ -90,6 +94,30 @@ app.delete("/validation", function(req, res) {
 app.post("/UserTable", function(req, res) {
   var postData = req.body;
   connection.query("INSERT INTO Users SET ?", postData, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
+  });
+});
+
+app.post("/CompanyTable", function(req, res) {
+  var postData = req.body;
+  connection.query("INSERT INTO Company SET ?", postData, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
+  });
+});
+
+app.post("/Category", function(req, res) {
+  var postData = req.body;
+  connection.query("INSERT INTO Category SET ?", postData, function(
     error,
     results,
     fields

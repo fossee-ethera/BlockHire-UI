@@ -36,6 +36,34 @@ class LoginForm extends Component {
     console.log(String(this.state.wallet_add));
   }
 
+  onRegisterClick = e => {
+    e.preventDefault();
+
+    var url = "http://localhost:4000/CompanyTable";
+
+    fetch(url, {
+      method: "POST", // or 'PUT'
+      mode: "cors",
+      body: JSON.stringify({
+        company_id: this.state.wallet_add,
+        name: this.state.company_name,
+        email_id: this.state.email_id,
+        description: this.state.description,
+        website: this.state.website,
+        industry: this.state.industry,
+        hq: this.state.head_quarters
+      }), // data can be `string` or {object}!
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.body)
+      .then(response => console.log("Success:", JSON.stringify(response)))
+      .catch(error => console.error("Error:", error));
+
+    this.props.history.replace("/jobseeker/profile", [this.state]);
+  };
+
   onHandleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -123,7 +151,12 @@ class LoginForm extends Component {
                   onChange={this.onHandleChange}
                 />
 
-                <Button color="black" fluid size="large">
+                <Button
+                  onClick={this.onRegisterClick}
+                  color="black"
+                  fluid
+                  size="large"
+                >
                   Register
                 </Button>
               </Segment>

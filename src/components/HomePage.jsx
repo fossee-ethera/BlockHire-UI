@@ -30,29 +30,78 @@ const getWidth = () => {
   return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth;
 };
 
-const Button1 = withRouter(({ history }) => (
-  <Button
-    primary
-    type="button"
-    onClick={async () => {
-      var candidateAddress = await portis.provider.enable();
-      if (candidateAddress.length > 0) history.push("/JobSeekerRegistration");
-    }}
-  >
-    Job Seeker
-  </Button>
-));
-
 class HomePage extends Component {
   state = {
     wallet_add: "",
     category: ""
   };
-  onHandleClick(text) {
+  onHandleClick(text, name) {
     this.setState({
       wallet_add: text
     });
+    var num;
+    var url = "http://localhost:4000/Category/" + text;
+    fetch(url)
+      .then(response => response.json())
+      .then(response => {
+        console.log(response.data);
+        num = response.data.length;
+        if (num > 0) {
+          name = response.data[0].category;
+        }
+        this.setState({
+          category: name
+        });
 
+        if (num == 0) {
+          var url = "http://localhost:4000/Category";
+
+          fetch(url, {
+            method: "POST", // or 'PUT'
+            mode: "cors",
+            body: JSON.stringify({
+              wallet_addr: this.state.wallet_add,
+              category: name
+            }), // data can be `string` or {object}!
+            headers: {
+              "Content-Type": "application/json"
+            }
+          })
+            .then(res => res.body)
+            .then(response => console.log("Success:", JSON.stringify(response)))
+            .catch(error => console.error("Error:", error));
+          if (name == "JobSeeker") {
+            this.props.history.push(
+              "/JobSeekerRegistration",
+              //{},
+              [this.state]
+            );
+          } else {
+            this.props.history.push(
+              "/CompanyRegistration",
+              //{},
+              [this.state]
+            );
+          }
+        } else {
+          if (name == "JobSeeker") {
+            this.props.history.replace(
+              "/jobseeker/profile",
+              //{},
+              [this.state]
+            );
+          } else {
+            this.props.history.replace(
+              "/company/profile",
+              //{},
+              [this.state]
+            );
+          }
+        }
+      })
+      .catch(err => console.log(err));
+    console.log("num");
+    console.log(num);
     console.log(this.state.wallet_add);
   }
 
@@ -69,7 +118,32 @@ class HomePage extends Component {
           <div className="circles">
             <div className="circle-one">
               <Segment circular style={square}>
-                <HeaderUserSignIn />
+                <Header as="h2" icon>
+                  <Icon name="user" />
+                  <Header.Subheader style={{ fontSize: 18 }}>
+                    Looking for jobs?
+                  </Header.Subheader>
+                  <Button
+                    primary
+                    type="button"
+                    onClick={async () => {
+                      var candidateAddress = await portis.provider.enable();
+                      if (candidateAddress.length > 0) {
+                        this.onHandleClick(
+                          String(candidateAddress[0]),
+                          "JobSeeker"
+                        );
+                        // this.props.history.push(
+                        //   "/JobSeekerRegistration",
+                        //   //{},
+                        //   [this.state]
+                        // );
+                      }
+                    }}
+                  >
+                    Job Seeker
+                  </Button>
+                </Header>
               </Segment>
             </div>
             <div className="circle-two">
@@ -86,19 +160,16 @@ class HomePage extends Component {
                       var companyAddress = await portis.provider.enable();
 
                       if (companyAddress.length > 0) {
-                        this.onHandleClick(String(companyAddress[0]));
+                        this.onHandleClick(
+                          String(companyAddress[0]),
+                          "Company"
+                        );
                         // withRouter(({ history, location }) =>
                         //   this.props.history.push(
                         //     "/CompanyRegistration",
                         //     location.state
                         //   )
                         // );
-
-                        this.props.history.push(
-                          "/CompanyRegistration",
-                          //{},
-                          [this.state]
-                        );
                       }
                     }}
                   >
@@ -118,20 +189,6 @@ class HomePage extends Component {
     );
   }
 }
-
-const HeaderUserSignIn = () => (
-  <Header as="h2" icon>
-    <Icon name="user" />
-    <Header.Subheader style={{ fontSize: 18 }}>
-      Looking for jobs?
-    </Header.Subheader>
-    <Button1 />
-  </Header>
-);
-
-// const HeaderCompanySignIn = () => (
-
-// );
 
 const AddExtraContent = () => <div className="content">Add Content Here</div>;
 

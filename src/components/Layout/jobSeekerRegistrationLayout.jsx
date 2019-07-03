@@ -9,27 +9,30 @@ import {
   Segment
 } from "semantic-ui-react";
 import TopHeader from "../RegistrationTopHeader";
-import Portis from "@portis/web3";
-import Web3 from "web3";
-const portis = new Portis("61f1e9b2-488e-4a59-a3e3-24e855799d8d", "ropsten");
-
-async function getWalletAddress() {
-  const candidateAddress = await portis.provider.enable();
-  return candidateAddress[0];
-}
 
 class LoginForm extends Component {
   state = {
-    wallet_addr: "",
+    wallet_add: "",
     fname: "",
     lname: "",
     email: "",
     dob: ""
   };
 
+  // async componentDidMount() {
+  //   var x = await getWalletAddress();
+  //   this.setState({ wallet_addr: x });
+  // }
+
   async componentDidMount() {
-    var x = await getWalletAddress();
-    this.setState({ wallet_addr: x });
+    console.log("this.props.location.state.wallet_add");
+    console.log(this.props.location.state[0].wallet_add);
+    await this.setState({
+      wallet_add: this.props.location.state[0].wallet_add
+    });
+    console.log("this.state.wallet_add");
+    console.log(this.state.wallet_add);
+    console.log(String(this.state.wallet_add));
   }
 
   onRegisterClick = e => {
@@ -41,7 +44,7 @@ class LoginForm extends Component {
       method: "POST", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
-        user_id: this.state.wallet_addr,
+        user_id: this.state.wallet_add,
         first_name: this.state.fname,
         last_name: this.state.lname,
         email: this.state.email,
