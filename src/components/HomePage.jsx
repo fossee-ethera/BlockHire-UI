@@ -37,6 +37,7 @@ const Button1 = withRouter(({ history }) => (
     onClick={async () => {
       var candidateAddress = await portis.provider.enable();
       if (candidateAddress.length > 0) history.push("/JobSeekerRegistration");
+      //console.log(candidateAddress);
       //}
       //return result;
     }}

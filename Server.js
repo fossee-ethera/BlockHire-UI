@@ -20,7 +20,7 @@ const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "mysql",
-  database: "blockdb"
+  database: "gethdb"
 });
 
 connection.connect(function(err) {
@@ -28,17 +28,21 @@ connection.connect(function(err) {
 });
 
 //require("./routes/html-routes")(app, connection);
-app.get("/", function(req, res) {
-  connection.query("SELECT * FROM about", function(err, results) {
+app.get("/Category", function(req, res) {
+  connection.query("SELECT * FROM Category", function(err, results) {
     err ? res.send(err) : res.json({ data: results });
   });
 });
 
-app.get("/validation", function(req, res) {
-  connection.query("SELECT * FROM validateRequests", function(err, results) {
-    err ? res.send(err) : res.json({ data: results });
-  });
-});
+// app.get("/validation", function(req, res) {
+//   connection.query("SELECT * FROM validateRequests", function(err, results) {
+//     err ? res.send(err) : res.json({ data: results });
+//   });
+// }).then(
+//   function(req,res){
+//     connection.query("SELECT * FROM validateRequests", function(err, results) {
+//       err ? res.send(err) : res.json({ data: results });
+//   });
 
 app.get("/certis/:sentby", function(req, res) {
   connection.query(
@@ -59,16 +63,6 @@ app.get("/certificate/:certiname", function(req, res) {
     }
   );
 });
-
-// app.get(
-//   "https://swarm-gateways.net/bzz:/:swarm_id",
-//   function(req, res) {
-//     res.send(req.params.swarm_id);
-//   },
-//   function(err, results) {
-//     err ? res.send(err) : res.json({ data: results });
-//   }
-// );
 
 //update status of certificate
 app.put("/validation", function(req, res) {
@@ -93,9 +87,9 @@ app.delete("/validation", function(req, res) {
   );
 });
 
-app.post("/certificate", function(req, res) {
+app.post("/UserTable", function(req, res) {
   var postData = req.body;
-  connection.query("INSERT INTO validateRequests SET ?", postData, function(
+  connection.query("INSERT INTO Users SET ?", postData, function(
     error,
     results,
     fields
