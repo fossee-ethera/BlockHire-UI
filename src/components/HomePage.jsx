@@ -37,23 +37,6 @@ const Button1 = withRouter(({ history }) => (
     onClick={async () => {
       var candidateAddress = await portis.provider.enable();
       if (candidateAddress.length > 0) history.push("/JobSeekerRegistration");
-      //}
-      //return result;
-    }}
-  >
-    Job Seeker
-  </Button>
-));
-
-const Button2 = withRouter(({ history }) => (
-  <Button
-    primary
-    type="button"
-    onClick={async () => {
-      var companyAddress = await portis.provider.enable();
-      if (companyAddress.length > 0) history.push("/CompanyRegistration");
-      //}
-      //return result;
     }}
   >
     Job Seeker
@@ -61,7 +44,18 @@ const Button2 = withRouter(({ history }) => (
 ));
 
 class HomePage extends Component {
-  state = {};
+  state = {
+    wallet_add: "",
+    category: ""
+  };
+  onHandleClick(text) {
+    this.setState({
+      wallet_add: text
+    });
+
+    console.log(this.state.wallet_add);
+  }
+
   render() {
     return (
       <div>
@@ -80,7 +74,37 @@ class HomePage extends Component {
             </div>
             <div className="circle-two">
               <Segment circular style={square}>
-                <HeaderCompanySignIn />
+                <Header as="h2" icon>
+                  <Icon name="graduation cap" />
+                  <Header.Subheader style={{ fontSize: 18 }}>
+                    Are you a Validator?
+                  </Header.Subheader>
+                  <Button
+                    primary
+                    type="button"
+                    onClick={async () => {
+                      var companyAddress = await portis.provider.enable();
+
+                      if (companyAddress.length > 0) {
+                        this.onHandleClick(String(companyAddress[0]));
+                        // withRouter(({ history, location }) =>
+                        //   this.props.history.push(
+                        //     "/CompanyRegistration",
+                        //     location.state
+                        //   )
+                        // );
+
+                        this.props.history.push(
+                          "/CompanyRegistration",
+                          //{},
+                          [this.state]
+                        );
+                      }
+                    }}
+                  >
+                    Company
+                  </Button>
+                </Header>
               </Segment>
             </div>
           </div>
@@ -105,15 +129,9 @@ const HeaderUserSignIn = () => (
   </Header>
 );
 
-const HeaderCompanySignIn = () => (
-  <Header as="h2" icon>
-    <Icon name="graduation cap" />
-    <Header.Subheader style={{ fontSize: 18 }}>
-      Are you a Validator?
-    </Header.Subheader>
-    <Button2 />
-  </Header>
-);
+// const HeaderCompanySignIn = () => (
+
+// );
 
 const AddExtraContent = () => <div className="content">Add Content Here</div>;
 
