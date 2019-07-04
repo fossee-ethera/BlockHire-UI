@@ -38,6 +38,41 @@ app.get("/Category/:wallet_addr", function(req, res) {
   );
 });
 
+app.get("/About/:wallet_addr", function(req, res) {
+  connection.query(
+    "select * from Users where user_id=?",
+    [req.params.wallet_addr],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/Experience/:wallet_addr", function(req, res) {
+  connection.query(
+    "select * from Experience where user_id=?",
+    [req.params.wallet_addr],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.put("/EditAboutUser/:user_id", function(req, res) {
+  connection.query(
+    "UPDATE Users SET first_name=?,last_name=?,about=? ,skills=?  WHERE user_id =?",
+    [
+      req.body.first_name,
+      req.body.last_name,
+      req.body.about,
+      req.body.skills,
+      req.params.user_id
+    ],
+    function(err, results, fields) {
+      err ? res.send(err) : res.send(JSON.stringify(results));
+    }
+  );
+});
 // app.get("/validation", function(req, res) {
 //   connection.query("SELECT * FROM validateRequests", function(err, results) {
 //     err ? res.send(err) : res.json({ data: results });
@@ -106,6 +141,18 @@ app.post("/UserTable", function(req, res) {
 app.post("/CompanyTable", function(req, res) {
   var postData = req.body;
   connection.query("INSERT INTO Company SET ?", postData, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
+  });
+});
+
+app.post("/AddExperience", function(req, res) {
+  var postData = req.body;
+  connection.query("INSERT INTO Experience SET ?", postData, function(
     error,
     results,
     fields

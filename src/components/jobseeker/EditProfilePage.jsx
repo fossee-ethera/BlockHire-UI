@@ -7,10 +7,12 @@ import {
   Image,
   Segment,
   Label,
-  Dropdown
+  Dropdown,
+  Modal
 } from "semantic-ui-react";
 import Experience from "./Experience";
 import Education from "./Education";
+import EditAbout from "./EditAbout";
 
 class EditProfilePage extends Component {
   constructor(props) {
@@ -20,12 +22,14 @@ class EditProfilePage extends Component {
     };
   }
 
-  componentDidMount() {
-    this.getUserInfo();
+  async componentDidMount() {
+    await this.getUserInfo();
   }
 
   getUserInfo = _ => {
-    fetch("http://localhost:4000")
+    var url =
+      "http://localhost:4000/About/" + this.props.location.state[0].wallet_add;
+    fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ about: response.data }))
       .catch(err => console.log(err));
@@ -37,7 +41,7 @@ class EditProfilePage extends Component {
         <Container>
           <AboutContainer passed={this.state.about} />
           <AddSectionToProfile />
-          <Experience name={this.state.about["0"]} />
+          <Experience id={this.props.location.state[0].wallet_add} />
           <Education />
         </Container>
       </div>
@@ -57,13 +61,19 @@ class AboutContainer extends Component {
             {this.props.passed.map((user, i) => (
               <div key={i}>
                 <h3>
-                  {user.firstname} {user.lastname}{" "}
+                  {user.first_name} {user.last_name}{" "}
                 </h3>
-                <h3>{user.bio}</h3>
-                <h3>{user.location}</h3>
+                <h3>{user.about}</h3>
+                <h3>{user.skills}</h3>
               </div>
             ))}
-            <Label as="a" attached="top right" icon="edit outline" />
+            <Modal
+              trigger={
+                <Label as="a" attached="top right" icon="edit outline" />
+              }
+            >
+              <EditAbout pass={this.props.passed[0]} />
+            </Modal>
           </Grid.Column>
         </Grid>
       </Segment>

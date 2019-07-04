@@ -7,6 +7,7 @@ import {
   Label,
   Modal,
   Step,
+  Form,
   Header,
   Icon,
   Input
@@ -17,13 +18,17 @@ class Experience extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      file: "",
       openModal: false,
-      certificate_name: "",
-      _status: "Validate",
-      sender: "dj1",
-      certs: [],
-      file: null,
-      c_hash: ""
+      exp_data: [],
+      jobtitle: "",
+      org: "",
+      from: "",
+      to: "",
+      swarm: "",
+      desc: "",
+      status: "Validate",
+      expiry: ""
     };
   }
 
@@ -32,45 +37,58 @@ class Experience extends Component {
   }
 
   fetchCertificates = () => {
-    var url = "http://localhost:4000/certis/" + this.state.sender;
+    var url = "http://localhost:4000/Experience/" + this.props.id;
     console.log(url);
     fetch(url)
       .then(response => response.json())
-      .then(response => this.setState({ certs: response.data }))
+      .then(response => this.setState({ exp_data: response.data }))
       .catch(err => console.log(err));
   };
 
   handleClick = e => {
     e.preventDefault();
 
-    var url = "http://localhost:4000/certificate";
+    if (this.state.swarm.length > 0) {
+      var url = "http://localhost:4000/AddExperience";
 
-    fetch(url, {
-      method: "POST", // or 'PUT'
-      mode: "cors",
-      body: JSON.stringify({
-        certiname: this.state.certificate_name,
-        sentby: this.state.sender,
-        status: this.state._status,
-        swarm_id: this.state.c_hash
-      }), // data can be `string` or {object}!
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => res.body)
-      .then(response => console.log("Success:", JSON.stringify(response)))
-      .catch(error => console.error("Error:", error));
+      fetch(url, {
+        method: "POST", // or 'PUT'
+        mode: "cors",
+        body: JSON.stringify({
+          user_id: this.props.id,
+          job_title: this.state.jobtitle,
+          organisation: this.state.org,
+          from: this.state.from,
+          to: this.state.to,
+          swarm_id: this.state.swarm,
+          description: this.state.desc,
+          status: this.state.status,
+          expiry: this.state.expiry
+        }), // data can be `string` or {object}!
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(res => res.body)
+        .then(response => console.log("Success:", JSON.stringify(response)))
+        .catch(error => console.error("Error:", error));
 
-    this.setState({ openModal: false });
+      this.setState({ openModal: false });
+    } else {
+      alert("File not uploaded");
+    }
   };
 
   handleChange = e => {
-    this.setState({ certificate_name: e.target.value });
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   handleModal = e => {
     this.setState({ openModal: true });
+  };
+
+  onCancel = e => {
+    this.setState({ openModal: false });
   };
 
   onFileChange = event => {
@@ -89,7 +107,7 @@ class Experience extends Component {
         .then(hash => {
           bzz.download(hash);
           console.log(hash);
-          this.setState({ c_hash: hash });
+          this.setState({ swarm: hash });
         });
     };
   };
@@ -102,31 +120,83 @@ class Experience extends Component {
           open={this.state.openModal}
         >
           <Segment>
-            <div>
-              <Label> Certificate Name</Label>
-              <Input
-                value={this.state.certificate_name}
+            <Form>
+              <Form.Group widths="equal">
+                <Form.Input
+                  fluid
+                  label="Job Title"
+                  name="jobtitle"
+                  value={this.state.jobtitle}
+                  placeholder="Job Title"
+                  onChange={this.handleChange}
+                />
+                <Form.Input
+                  fluid
+                  label="Organization"
+                  name="org"
+                  value={this.state.org}
+                  placeholder="Organization"
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <Form.Group widths="equal">
+                <Form.Input
+                  type="date"
+                  fluid
+                  label="From-Date"
+                  name="from"
+                  value={this.state.from}
+                  placeholder="From-Year"
+                  onChange={this.handleChange}
+                />
+                <Form.Input
+                  type="date"
+                  fluid
+                  label="To-Date"
+                  value={this.state.to}
+                  name="to"
+                  placeholder="To-Date"
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <Form.TextArea
+                label="Description"
+                placeholder="Detailed Description goes here"
+                value={this.state.desc}
+                name="desc"
                 onChange={this.handleChange}
-              />{" "}
-            </div>
-            <div>
-              <Header icon>
-                <Icon name="pdf file outline" />
-                No documents are listed for this customer.
-              </Header>
-            </div>
-            <div>
-              <Input type="file" name="file" onChange={this.onFileChange} />
-            </div>
-            <Button onClick={this.handleClick}>Add</Button>
+              />
+              <Form.Group widths="equal">
+                <Form.Input
+                  fluid
+                  label="Expiry"
+                  name="expiry"
+                  value={this.state.expiry}
+                  placeholder="Write NA if no expiry"
+                  onChange={this.handleChange}
+                />
+                <Form.Input
+                  type="file"
+                  name="file"
+                  onChange={this.onFileChange}
+                />
+              </Form.Group>
+              <Button onClick={this.handleClick}>Add</Button>
+              <Button onClick={this.onCancel}>Cancel</Button>
+            </Form>
           </Segment>
         </Modal>
-        {this.state.certs.map((listItem, i) => (
+        {this.state.exp_data.map((listItem, i) => (
           <EditExperience
             key={i}
-            content={listItem.certiname}
-            sender={listItem.sentby}
-            c_state={listItem.status}
+            jobtitle={listItem.job_title}
+            org={listItem.organisation}
+            from={listItem.from}
+            to={listItem.to}
+            desc={listItem.description}
+            c_status={listItem.status}
+            expiry={listItem.expiry}
+            swarmid={listItem.swarm_id}
           />
         ))}
       </Segment>
@@ -141,23 +211,26 @@ class Experience extends Component {
 // );
 
 class EditExperience extends Component {
-  state = { cert_state: "Validate" };
+  state = { cert_state: "Validate", swarmId: "" };
 
   //check from database
   componentDidMount() {
-    this.setState({ cert_state: this.props.c_state });
+    this.setState({
+      cert_state: this.props.c_status,
+      swarmId: this.props.swarmid
+    });
   }
   //changes status to pending, disables the button
   onClickValidate = () => {
-    this.setState({ cert_state: "pending" });
-    var url = "http://localhost:4000/validation";
+    this.setState({ cert_state: "Pending" });
+    var url = "http://localhost:4000/Validation";
 
     fetch(url, {
       method: "PUT", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
-        cert: this.props.content,
-        stat: "pending"
+        swarm_id: this.state.swarmId,
+        status: "Pending"
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -169,13 +242,13 @@ class EditExperience extends Component {
   };
 
   onClickDelete = () => {
-    var url = "http://localhost:4000/validation";
+    var url = "http://localhost:4000/DeleteExperience";
 
     fetch(url, {
       method: "DELETE", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
-        cert: this.props.content
+        swarm_id: this.state.swarmId
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -187,7 +260,6 @@ class EditExperience extends Component {
   };
 
   render() {
-    const { cert_state } = this.state;
     return (
       <Segment>
         <Grid>
@@ -198,14 +270,19 @@ class EditExperience extends Component {
                 <Label as="a" attached="top right" icon="edit outline" />
               }
             />
-            <h3>Content </h3>
-            <h3>{this.props.content}</h3>
+
+            <h3>{this.props.jobtitle}</h3>
+            <h3>{this.props.org}</h3>
+            <h4>From {this.props.from}</h4>
+            <h4>To {this.props.to}</h4>
+            <h5>{this.props.desc}</h5>
+            <h5>{this.props.expiry}</h5>
             <Button
               onClick={this.onClickValidate}
               primary
-              disabled={cert_state !== "Validate"}
+              disabled={this.state.cert_state !== "Validate"}
             >
-              {cert_state}
+              {this.state.cert_state}
             </Button>
             <Button
               circular
@@ -216,8 +293,12 @@ class EditExperience extends Component {
           </Grid.Column>
           <Grid.Column width={5}>
             <Step.Group ordered vertical size="tiny">
-              <Step completed={cert_state !== "Validate"}>Requested</Step>
-              <Step completed={cert_state === "done"}>Validated</Step>
+              <Step completed={this.state.cert_state !== "Validate"}>
+                Requested
+              </Step>
+              <Step completed={this.state.cert_state === "Done"}>
+                Validated
+              </Step>
             </Step.Group>
           </Grid.Column>
         </Grid>

@@ -2,10 +2,12 @@ h1 {
   color: white;
   font-size: 4em;
   font: serif;
+  text-align: center;
 }
 
 h2 {
   color: white;
+  text-align: center;
 }
 
 .circles {

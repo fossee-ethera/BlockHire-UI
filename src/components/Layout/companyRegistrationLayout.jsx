@@ -61,7 +61,7 @@ class LoginForm extends Component {
       .then(response => console.log("Success:", JSON.stringify(response)))
       .catch(error => console.error("Error:", error));
 
-    this.props.history.replace("/jobseeker/profile", [this.state]);
+    this.props.history.replace("/company/profile", [this.state]);
   };
 
   onHandleChange = e => {

@@ -11,7 +11,7 @@ import Validation from "./Validation";
 const Routes = () => (
   <React.Fragment>
     <Switch>
-      <Route exact path="/" component={EditProfilePage} />
+      {/* <Route exact path="/" component={EditProfilePage} /> */}
       <Route path="/jobs" component={Jobs} />
       <Route path="/account" component={Account} />
       <Route path="/validation" component={Validation} />

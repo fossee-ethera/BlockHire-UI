@@ -9,7 +9,7 @@ import Notifications from "./Notifications";
 const MenuRoutes = () => (
   <React.Fragment>
     <Switch>
-      <Route path="/profile" component={EditProfilePage} />
+      {/* <Route path="/profile" component={EditProfilePage} /> */}
       <Route path="/jobs" component={Jobs} />
       <Route path="/account" component={Account} />
       <Route path="/notifications" component={Notifications} />
