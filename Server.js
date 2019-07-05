@@ -28,9 +28,19 @@ connection.connect(function(err) {
 });
 
 //require("./routes/html-routes")(app, connection);
-app.get("/Category/:wallet_addr", function(req, res) {
+app.get("/Category/:wallet_address", function(req, res) {
   connection.query(
-    "select category from Category where wallet_addr=?",
+    "select category from Category where wallet_address=?",
+    [req.params.wallet_address],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/Company/:wallet_addr", function(req, res) {
+  connection.query(
+    "select name, email_id, description, website, industry, hq   from Company where company_id =?",
     [req.params.wallet_addr],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
@@ -67,6 +77,24 @@ app.put("/EditAboutUser/:user_id", function(req, res) {
       req.body.about,
       req.body.skills,
       req.params.user_id
+    ],
+    function(err, results, fields) {
+      err ? res.send(err) : res.send(JSON.stringify(results));
+    }
+  );
+});
+
+app.put("/Company/:company_id", function(req, res) {
+  connection.query(
+    "UPDATE Company SET name=? ,email_id=? ,description=? ,website=? ,industry=? ,hq=?  WHERE company_id =?",
+    [
+      req.body.name,
+      req.body.email_id,
+      req.body.description,
+      req.body.website,
+      req.body.industry,
+      req.body.hq,
+      req.params.company_id
     ],
     function(err, results, fields) {
       err ? res.send(err) : res.send(JSON.stringify(results));

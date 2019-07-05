@@ -60,7 +60,7 @@ class HomePage extends Component {
             method: "POST", // or 'PUT'
             mode: "cors",
             body: JSON.stringify({
-              wallet_addr: this.state.wallet_add,
+              wallet_address: this.state.wallet_add,
               category: name
             }), // data can be `string` or {object}!
             headers: {
