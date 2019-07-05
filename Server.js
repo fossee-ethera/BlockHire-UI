@@ -104,20 +104,21 @@ app.get("/certificate/:certiname", function(req, res) {
 });
 
 //update status of certificate
-app.put("/UpdateStatus", function(req, res) {
+app.put("/validation", function(req, res) {
   connection.query(
-    "UPDATE Experience SET status=?  WHERE swarm_id =?",
-    [req.body.status, req.body.swarm_id],
+    "UPDATE `validateRequests` SET `status`=?  WHERE `certiname` =?",
+    [req.body.stat, req.body.cert],
     function(err, results, fields) {
       err ? res.send(err) : res.send(JSON.stringify(results));
     }
   );
 });
 
-app.delete("/DeleteExperience", function(req, res) {
+app.delete("/validation", function(req, res) {
+  console.log(req.body);
   connection.query(
-    "DELETE FROM Experience WHERE swarm_id=?",
-    [req.body.swarm_id],
+    "DELETE FROM `validateRequests` WHERE `certiname`=?",
+    [req.body.cert],
     function(error, results, fields) {
       if (error) throw error;
       res.end("Record has been deleted!");
