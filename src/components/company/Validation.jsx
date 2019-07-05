@@ -16,7 +16,6 @@ import { Switch, Route, Link, BrowserRouter as Router } from "react-router-dom";
 //import { Document, Page } from "react-pdf/dist/entry.parcel";
 import { Document, Page } from "react-pdf/dist/entry.webpack";
 import "react-pdf/dist/Page/AnnotationLayer.css";
-import { callbackify } from "util";
 
 var BASE64_MARKER = ";base64,";
 
@@ -36,7 +35,7 @@ function convertDataURIToBinary(dataURI) {
 class Validation extends Component {
   constructor(props) {
     super(props);
-    this.state = { activeItem: "pending", validationList: [], fullList: [] };
+    this.state = { activeItem: "Pending", validationList: [], fullList: [] };
   }
 
   //validationList contains validation requests
@@ -55,7 +54,7 @@ class Validation extends Component {
   }
 
   getValidationRequests = _ => {
-    fetch("http://localhost:4000/validation")
+    fetch("http://localhost:4000/ValidationRequests")
       .then(response => response.json())
       .then(response => this.setState({ fullList: response.data }))
       .catch(err => console.log(err));
@@ -74,25 +73,25 @@ class Validation extends Component {
               <h3>Validation Requests</h3>
               <Menu attached="top" tabular>
                 <Menu.Item
-                  name="pending"
-                  active={activeItem === "pending"}
+                  name="Pending"
+                  active={activeItem === "Pending"}
                   onClick={this.handleItemClick}
                   as={Link}
-                  to="/validation/pending"
+                  to="/validation/Pending"
                 />
                 <Menu.Item
-                  name="done"
-                  active={activeItem === "done"}
+                  name="Done"
+                  active={activeItem === "Done"}
                   onClick={this.handleItemClick}
                   as={Link}
-                  to="/validation/done"
+                  to="/validation/Done"
                 />
                 <Menu.Item
-                  name="rejected"
-                  active={activeItem === "rejected"}
+                  name="Rejected"
+                  active={activeItem === "Rejected"}
                   onClick={this.handleItemClick}
                   as={Link}
-                  to="/validation/rejected"
+                  to="/validation/Rejected"
                 />
               </Menu>
               <Segment attached="bottom">
@@ -110,15 +109,15 @@ const RouteMenu = props => (
   <React.Fragment>
     <Switch>
       <Route
-        path="/validation/pending"
+        path="/validation/Pending"
         render={() => <RequestListItems passed={props.item} />}
       />
       <Route
-        path="/validation/done"
+        path="/validation/Done"
         render={() => <RequestListItems passed={props.item} />}
       />
       <Route
-        path="/validation/rejected"
+        path="/validation/Rejected"
         render={() => <RequestListItems passed={props.item} />}
       />
     </Switch>
@@ -146,13 +145,13 @@ const RequestListItems = props => (
 const RouteCertificate = () => (
   <React.Fragment>
     <Switch>
-      <Route path="/validation/pending/:certname" component={DocSign} />
+      <Route path="/validation/Pending/:certname" component={DocSign} />
       <Route
-        path="/validation/done/:certname"
+        path="/validation/Done/:certname"
         component={DisplayDoneCertificate}
       />
       <Route
-        path="/validation/rejected/:certname"
+        path="/validation/Rejected/:certname"
         component={DisplayRejectedCertificate}
       />
     </Switch>
@@ -208,7 +207,7 @@ class DocSign extends Component {
       mode: "cors",
       body: JSON.stringify({
         cert: this.state.cert_name,
-        stat: "rejected"
+        stat: "Rejected"
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -227,7 +226,7 @@ class DocSign extends Component {
       mode: "cors",
       body: JSON.stringify({
         cert: this.state.cert_name,
-        stat: "done"
+        stat: "Done"
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"

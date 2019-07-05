@@ -223,7 +223,7 @@ class EditExperience extends Component {
   //changes status to pending, disables the button
   onClickValidate = () => {
     this.setState({ cert_state: "Pending" });
-    var url = "http://localhost:4000/Validation";
+    var url = "http://localhost:4000/UpdateStatus";
 
     fetch(url, {
       method: "PUT", // or 'PUT'
