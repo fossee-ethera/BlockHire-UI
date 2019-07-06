@@ -31,11 +31,18 @@ const getWidth = () => {
 };
 
 class HomePage extends Component {
-  state = {
-    wallet_add: "",
-    category: ""
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      wallet_add: "",
+      category: ""
+    };
+  }
+
   onHandleClick(text, name) {
+    console.log("wallet...............");
+    console.log(text);
     this.setState({
       wallet_add: text
     });
@@ -70,7 +77,7 @@ class HomePage extends Component {
             .then(res => res.body)
             .then(response => console.log("Success:", JSON.stringify(response)))
             .catch(error => console.error("Error:", error));
-          if (name == "JobSeeker") {
+          if (name === "JobSeeker") {
             this.props.history.push(
               "/JobSeekerRegistration",
               //{},
@@ -84,7 +91,7 @@ class HomePage extends Component {
             );
           }
         } else {
-          if (name == "JobSeeker") {
+          if (name === "JobSeeker") {
             this.props.history.replace(
               "/jobseeker/profile",
               //{},
@@ -100,9 +107,6 @@ class HomePage extends Component {
         }
       })
       .catch(err => console.log(err));
-    console.log("num");
-    console.log(num);
-    console.log(this.state.wallet_add);
   }
 
   render() {
@@ -128,6 +132,8 @@ class HomePage extends Component {
                     type="button"
                     onClick={async () => {
                       var candidateAddress = await portis.provider.enable();
+                      console.log(candidateAddress[0]);
+                      sessionStorage.setItem("LoggedUser", candidateAddress[0]);
                       if (candidateAddress.length > 0) {
                         this.onHandleClick(
                           String(candidateAddress[0]),
@@ -158,7 +164,8 @@ class HomePage extends Component {
                     type="button"
                     onClick={async () => {
                       var companyAddress = await portis.provider.enable();
-
+                      console.log(companyAddress);
+                      sessionStorage.setItem("LoggedUser", companyAddress[0]);
                       if (companyAddress.length > 0) {
                         this.onHandleClick(
                           String(companyAddress[0]),

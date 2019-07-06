@@ -13,6 +13,50 @@ import {
 } from "semantic-ui-react";
 
 var global;
+
+class EditProfilePage extends Component {
+  state = {
+    about: []
+  };
+  async componentDidMount() {
+    await this.getUserInfo();
+  }
+
+  getUserInfo = _ => {
+    //  var url = "http://localhost:4000/Company/" + this.props.location.state[0].wallet_add;
+    var url =
+      "http://localhost:4000/Company/" + sessionStorage.getItem("LoggedUser");
+    fetch(url)
+      .then(response => response.json())
+      .then(response =>
+        this.setState({
+          about: response.data
+        })
+      )
+      .catch(err => console.log(err));
+    console.log(this.state.about);
+  };
+
+  render() {
+    if (this.state.about.length == 0) {
+      return (
+        <div>
+          <h1>Loading</h1>
+        </div>
+      );
+    } else {
+      //    this.state.about[0].wallet_add = this.props.location.state[0].wallet_add;
+      return (
+        <div>
+          <Container>
+            <AboutContainer passed={this.state.about} />
+          </Container>
+        </div>
+      );
+    }
+  }
+}
+
 class AboutContainer extends Component {
   constructor(props) {
     super(props);
@@ -41,7 +85,10 @@ class AboutContainer extends Component {
 
     console.log("yeh global variable hai");
     console.log(global);
-    var url = "http://localhost:4000/Company/" + this.state.wallet_add;
+    //  var url = "http://localhost:4000/EditCompany/" + this.state.wallet_add;
+    var url =
+      "http://localhost:4000/EditCompany/" +
+      sessionStorage.getItem("LoggedUser");
     fetch(url, {
       method: "PUT", // or 'PUT'
       mode: "cors",
@@ -201,49 +248,6 @@ class AboutContainer extends Component {
         </Grid>
       </Segment>
     );
-  }
-}
-class EditProfilePage extends Component {
-  state = {
-    about: []
-  };
-  async componentDidMount() {
-    await this.getUserInfo();
-  }
-
-  getUserInfo = _ => {
-    console.log("Yeh hai data from Registartion Page");
-    console.log(this.props.location.state[0].wallet_add);
-    var w_a = this.props.location.state[0].wallet_add;
-    fetch(
-      "http://localhost:4000/Company/" + this.props.location.state[0].wallet_add
-    )
-      .then(response => response.json())
-      .then(response =>
-        this.setState({
-          about: response.data
-        })
-      )
-      .catch(err => console.log(err));
-  };
-
-  render() {
-    if (this.state.about.length == 0) {
-      return (
-        <div>
-          <h1>Loading</h1>
-        </div>
-      );
-    } else {
-      this.state.about[0].wallet_add = this.props.location.state[0].wallet_add;
-      return (
-        <div>
-          <Container>
-            <AboutContainer passed={this.state.about} />
-          </Container>
-        </div>
-      );
-    }
   }
 }
 

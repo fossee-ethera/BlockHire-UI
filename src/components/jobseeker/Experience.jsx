@@ -37,12 +37,15 @@ class Experience extends Component {
   }
 
   fetchCertificates = () => {
-    var url = "http://localhost:4000/Experience/" + this.props.id;
+    var url =
+      "http://localhost:4000/Experience/" +
+      sessionStorage.getItem("LoggedUser");
     console.log(url);
     fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ exp_data: response.data }))
       .catch(err => console.log(err));
+    console.log(this.state.exp_data);
   };
 
   handleClick = e => {
@@ -55,7 +58,7 @@ class Experience extends Component {
         method: "POST", // or 'PUT'
         mode: "cors",
         body: JSON.stringify({
-          user_id: this.props.id,
+          user_id: sessionStorage.getItem("LoggedUser"),
           job_title: this.state.jobtitle,
           organisation: this.state.org,
           from: this.state.from,
@@ -211,25 +214,37 @@ class Experience extends Component {
 // );
 
 class EditExperience extends Component {
-  state = { cert_state: "Validate", swarmId: "" };
+  state = { cert_state: "Validate", swarmId: "", category: "Experience" };
 
   //check from database
-  componentDidMount() {
-    this.setState({
-      cert_state: this.props.c_status,
+  async componentDidMount() {
+    await this.setState({
       swarmId: this.props.swarmid
     });
   }
-  //changes status to pending, disables the button
-  onClickValidate = () => {
+
+  fetchStatus = () => {
+    var url = "http://localhost:4000/CertificateStatus/" + this.props.swarmid;
+    console.log(url);
+    fetch(url)
+      .then(response => response.json())
+      .then(response => {
+        this.setState({ cert_state: response.data });
+      })
+      .catch(err => console.log(err));
+  };
+
+  changeStatus = () => {
     this.setState({ cert_state: "Pending" });
-    var url = "http://localhost:4000/Validation";
+
+    var url =
+      "http://localhost:4000/changeExperienceState/" + this.state.swarmId;
+    console.log(url);
 
     fetch(url, {
       method: "PUT", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
-        swarm_id: this.state.swarmId,
         status: "Pending"
       }), // data can be `string` or {object}!
       headers: {
@@ -239,6 +254,28 @@ class EditExperience extends Component {
       .then(res => res.body)
       .then(response => console.log("Success:", JSON.stringify(response)))
       .catch(error => console.error("Error:", error));
+  };
+
+  //changes status to pending, disables the button
+  onClickValidate = () => {
+    //adding data to validation_requests table
+    // var url = "http://localhost:4000/Validation";
+    // fetch(url, {
+    //   method: "POST", // or 'PUT'
+    //   mode: "cors",
+    //   body: JSON.stringify({
+    //     swarm_id: this.state.swarmId,
+    //     category: "Experience"
+    //   }), // data can be `string` or {object}!
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   }
+    // })
+    //   .then(res => res.body)
+    //   .then(response => console.log("Success:", JSON.stringify(response)))
+    //   .catch(error => console.error("Error:", error));
+
+    this.changeStatus();
   };
 
   onClickDelete = () => {

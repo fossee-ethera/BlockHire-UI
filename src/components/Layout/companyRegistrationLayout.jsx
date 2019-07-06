@@ -26,14 +26,10 @@ class LoginForm extends Component {
   };
 
   async componentDidMount() {
-    console.log("this.props.location.state.wallet_add");
-    console.log(this.props.location.state[0].wallet_add);
     await this.setState({
-      wallet_add: this.props.location.state[0].wallet_add
+      //    wallet_add: this.props.location.state[0].wallet_add
+      wallet_add: sessionStorage.getItem("LoggedUser")
     });
-    console.log("this.state.wallet_add");
-    console.log(this.state.wallet_add);
-    console.log(String(this.state.wallet_add));
   }
 
   onRegisterClick = e => {

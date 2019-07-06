@@ -46,7 +46,7 @@ class MenuBar extends Component {
             active={activeItem === "profile"}
             onClick={this.handleItemClick}
             as={Link}
-            to="/profile"
+            to="/jobseeker/profile"
           />
           <Menu.Item
             name="jobs"

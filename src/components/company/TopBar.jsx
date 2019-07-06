@@ -1,29 +1,11 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { Menu, Dropdown, Search } from "semantic-ui-react";
 
 class TopBar extends Component {
-  state = {};
-  render() {
-    return (
-      <div className="topbar">
-        <MenuBar />
-      </div>
-    );
-  }
-}
-
-const SearchBar = () => (
-  <div className="search">
-    <Search placeholder="Search" />
-  </div>
-);
-
-class MenuBar extends Component {
   state = { activeItem: "profile" };
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
-
   render() {
     const { activeItem } = this.state;
 
@@ -45,7 +27,7 @@ class MenuBar extends Component {
             active={activeItem === "profile"}
             onClick={this.handleItemClick}
             as={Link}
-            to="/"
+            to="/company/profile"
           />
           <Menu.Item
             name="jobs"
@@ -79,7 +61,15 @@ class MenuBar extends Component {
             <Dropdown.Menu>
               <Dropdown.Item>Change Password</Dropdown.Item>
               <Dropdown.Item>Manage</Dropdown.Item>
-              <Dropdown.Item>Log Out</Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  sessionStorage.clear();
+
+                  //this.props.history.replace("/");
+                }}
+              >
+                Log Out
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Menu.Menu>
@@ -88,4 +78,10 @@ class MenuBar extends Component {
   }
 }
 
-export default TopBar;
+const SearchBar = () => (
+  <div className="search">
+    <Search placeholder="Search" />
+  </div>
+);
+
+export default withRouter(TopBar);

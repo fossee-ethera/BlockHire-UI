@@ -11,42 +11,31 @@ import {
   Modal
 } from "semantic-ui-react";
 import { Switch, Route, Link, BrowserRouter as Router } from "react-router-dom";
+import { Document, Page } from "react-pdf";
+import { pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
+  pdfjs.version
+}/pdf.worker.js`;
 
-//import { Document, Page } from "react-pdf";
-//import { Document, Page } from "react-pdf/dist/entry.parcel";
-import { Document, Page } from "react-pdf/dist/entry.webpack";
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import { callbackify } from "util";
-
-var BASE64_MARKER = ";base64,";
-
-function convertDataURIToBinary(dataURI) {
-  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
-  var base64 = dataURI.substring(base64Index);
-  var raw = window.atob(base64);
-  var rawLength = raw.length;
-  var array = new Uint8Array(new ArrayBuffer(rawLength));
-
-  for (var i = 0; i < rawLength; i++) {
-    array[i] = raw.charCodeAt(i);
-  }
-  return array;
-}
+const options = {
+  cMapUrl: "cmaps/",
+  cMapPacked: true
+};
 
 class Validation extends Component {
   constructor(props) {
     super(props);
-    this.state = { activeItem: "pending", validationList: [], fullList: [] };
+    this.state = { activeItem: "Pending", validationList: [], fullList: [] };
   }
 
   //validationList contains validation requests
   handleItemClick = (e, { name }) => {
-    const newlist = this.state.fullList.filter(el => {
-      return el.status === name;
-    });
+    // const newlist = this.state.fullList.filter(el => {
+    //   return el.status === name;
+    // });
     this.setState({
-      activeItem: name,
-      validationList: newlist
+      activeItem: name
+      //  validationList: newlist
     });
   };
 
@@ -54,10 +43,10 @@ class Validation extends Component {
     this.getValidationRequests();
   }
 
-  getValidationRequests = _ => {
-    fetch("http://localhost:4000/validation")
+  getValidationRequests = () => {
+    fetch("http://localhost:4000/ValidationRequests")
       .then(response => response.json())
-      .then(response => this.setState({ fullList: response.data }))
+      .then(response => this.setState({ validationList: response.data }))
       .catch(err => console.log(err));
   };
   render() {
@@ -74,22 +63,22 @@ class Validation extends Component {
               <h3>Validation Requests</h3>
               <Menu attached="top" tabular>
                 <Menu.Item
-                  name="pending"
-                  active={activeItem === "pending"}
+                  name="Pending"
+                  active={activeItem === "Pending"}
                   onClick={this.handleItemClick}
                   as={Link}
                   to="/validation/pending"
                 />
                 <Menu.Item
-                  name="done"
-                  active={activeItem === "done"}
+                  name="Done"
+                  active={activeItem === "Done"}
                   onClick={this.handleItemClick}
                   as={Link}
                   to="/validation/done"
                 />
                 <Menu.Item
-                  name="rejected"
-                  active={activeItem === "rejected"}
+                  name="Rejected"
+                  active={activeItem === "Rejected"}
                   onClick={this.handleItemClick}
                   as={Link}
                   to="/validation/rejected"
@@ -128,15 +117,11 @@ const RouteMenu = props => (
 const RequestListItems = props => (
   <List divided relaxed>
     {props.passed.map((listItem, i) => (
-      <List.Item
-        key={i}
-        as={Link}
-        to={`/validation/${listItem.status}/${listItem.certiname}`}
-      >
+      <List.Item key={i} as={Link} to={`/validation/pending/${listItem.vr_id}`}>
         <List.Icon name="paperclip" size="large" verticalAlign="middle" />
         <List.Content>
-          <List.Header color="blue">{listItem.certiname}</List.Header>
-          <List.Description>sent by {listItem.sentby}</List.Description>
+          <List.Header color="blue">Request ID {listItem.vr_id}</List.Header>
+          <List.Description>Swarm ID {listItem.swarm_id}</List.Description>
         </List.Content>
       </List.Item>
     ))}
@@ -146,7 +131,7 @@ const RequestListItems = props => (
 const RouteCertificate = () => (
   <React.Fragment>
     <Switch>
-      <Route path="/validation/pending/:certname" component={DocSign} />
+      <Route exact path="/validation/pending/:vrID" component={DocSign} />
       <Route
         path="/validation/done/:certname"
         component={DisplayDoneCertificate}
@@ -159,23 +144,27 @@ const RouteCertificate = () => (
   </React.Fragment>
 );
 
-const options = {
-  cMapUrl: "cmaps/",
-  cMapPacked: true
-};
-
+var URL;
 class DocSign extends Component {
   state = {
-    cert_name: "",
+    vr_id: "",
     swarmId: "",
-    getFile: ""
+    getFile: "",
+    pages: 0,
+    category: ""
   };
 
   //make changes here, props never changes
-  async componentDidMount() {
-    await this.setState({ cert_name: this.props.match.params.certname });
+  componentDidMount() {
+    //  await this.setState({ vr_id: this.props.match.params.vrID });
     this.getSwarmId();
+    URL = this.props.match.url;
   }
+
+  onDocumentLoadSuccess = ({ numPages }) => {
+    this.setState({ pages: numPages });
+  };
+  onPageRenderSuccess = page => console.log("Rendered a page", page);
 
   getFileRaw = () => {
     var url = "https://swarm-gateways.net/bzz:/" + this.state.swarmId;
@@ -188,8 +177,7 @@ class DocSign extends Component {
   };
 
   getSwarmId = () => {
-    var url =
-      "http://localhost:4000/certificate/" + this.props.match.params.certname;
+    var url = "http://localhost:4000/SwarmID/" + this.props.match.params.vrID;
 
     fetch(url)
       .then(response => response.json())
@@ -200,15 +188,13 @@ class DocSign extends Component {
 
   handleRejectButtonClick = e => {
     e.preventDefault();
-
-    var url = "http://localhost:4000/validation";
+    var url = "http://localhost:4000/RejectDoc/" + this.state.swarmId;
 
     fetch(url, {
-      method: "PUT", // or 'PUT'
+      method: "POST", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
-        cert: this.state.cert_name,
-        stat: "rejected"
+        category: this.state.category
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -219,15 +205,24 @@ class DocSign extends Component {
       .catch(error => console.error("Error:", error));
   };
 
+  getCategory = () => {
+    var url =
+      "http://localhost:4000/getCategory/" + this.props.match.params.vrID;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(response => this.setState({ category: response.data[0].category }))
+      .catch(err => console.log(err));
+  };
+
   handleSignButtonClick = e => {
-    var url = "http://localhost:4000/validation";
+    var url = "http://localhost:4000/AcceptDoc/" + this.state.swarmId;
 
     fetch(url, {
-      method: "PUT", // or 'PUT'
+      method: "POST", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
-        cert: this.state.cert_name,
-        stat: "done"
+        category: this.state.category
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -239,10 +234,38 @@ class DocSign extends Component {
   };
 
   render() {
+    if (this.props.match.url != URL) {
+      URL = this.props.match.url;
+      var id = this.props.match.params.vrID;
+      this.setState({ vr_id: id });
+      this.getSwarmId();
+      this.getCategory();
+      console.log(this.props.match.url);
+    }
+
     return (
       <Segment.Group>
-        {this.props.match.params.certname}
-        <DisplayCertificate item={this.state.getFile} />
+        {this.props.match.params.vrID}
+        <Segment>
+          <Document
+            file={this.state.getFile}
+            onLoadSuccess={this.onDocumentLoadSuccess}
+            options
+          >
+            {/* <Page
+              renderMode={"canvas"}
+              onRenderSuccess={this.onPageRenderSuccess}
+              pageNumber={3}
+            /> */}
+            {Array.from(new Array(this.state.pages), (el, index) => (
+              <Page
+                renderMode={"canvas"}
+                key={`page_${index + 1}`}
+                pageNumber={index + 1}
+              />
+            ))}
+          </Document>
+        </Segment>
         <Segment>
           <div>
             <Header icon>
@@ -278,18 +301,14 @@ class DocSign extends Component {
 
 //after clicking listItem routing must happen
 
-class DisplayCertificate extends Component {
-  state = {};
-  render() {
-    return (
-      <Segment>
-        <Document file={this.props.item} options={options}>
-          <Page />
-        </Document>
-      </Segment>
-    );
-  }
-}
+// class DisplayCertificate extends Component {
+//   state = {};
+//   render() {
+//     return (
+
+//     );
+//   }
+// }
 
 const DisplayDoneCertificate = ({ match }) => (
   <Segment>
