@@ -38,10 +38,41 @@ app.get("/Category/:wallet_address", function(req, res) {
   );
 });
 
-app.get("/CertificateStatus/:swarm_id", function(req, res) {
+app.get("/ExperienceStatus/:swarm_id", function(req, res) {
   connection.query(
     "select status from Experience where swarm_id=?",
     [req.params.swarm_id],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/EducationStatus/:swarm_id", function(req, res) {
+  connection.query(
+    "select status from Education where swarm_id=?",
+    [req.params.swarm_id],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+//Fetching data from Views
+app.get("/ExperienceUserView/:vr_id", function(req, res) {
+  connection.query(
+    "select first_name,last_name from ExperienceUserView where vr_id=?",
+    [req.params.vr_id],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/EducationUserView/:vr_id", function(req, res) {
+  connection.query(
+    "select first_name,last_name from EducationUserView where vr_id=?",
+    [req.params.vr_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
     }

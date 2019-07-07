@@ -30,23 +30,89 @@ class Validation extends Component {
 
   //validationList contains validation requests
   handleItemClick = (e, { name }) => {
-    // const newlist = this.state.fullList.filter(el => {
-    //   return el.status === name;
-    // });
+    const newlist = this.state.fullList.filter(el => {
+      return el.status === name;
+    });
     this.setState({
-      activeItem: name
-      //  validationList: newlist
+      activeItem: name,
+      validationList: newlist
     });
   };
 
-  componentDidMount() {
-    this.getValidationRequests();
+  async componentDidMount() {
+    await this.getValidationRequests();
+    console.log(this.state.fullList);
   }
 
+  getUserName = () => {
+    for (var i = 0; i < this.state.validationList.length; i++) {}
+  };
+
+  getStatus = async () => {
+    for (var i = 0; i < this.state.validationList.length; i++) {
+      var category = this.state.validationList[i].category;
+      var swarm = this.state.validationList[i].swarm_id;
+      var vrID = this.state.validationList[i].vr_id;
+      if (category === "Experience") {
+        var url = "http://localhost:4000/ExperienceStatus/" + swarm;
+        await fetch(url)
+          .then(response => response.json())
+          .then(response =>
+            this.setState(
+              (this.state.fullList[i].status = response.data[0].status)
+            )
+          )
+          .catch(err => console.log(err));
+
+        var url1 = "http://localhost:4000/ExperienceUserView/" + vrID;
+        await fetch(url1)
+          .then(response => response.json())
+          .then(response =>
+            this.setState(
+              (this.state.fullList[i].first_name = response.data[0].first_name),
+              (this.state.fullList[i].last_name = response.data[0].last_name)
+            )
+          )
+          .catch(err => console.log(err));
+      } else if (category === "Education") {
+        var url = "http://localhost:4000/EducationStatus/" + swarm;
+        await fetch(url)
+          .then(response => response.json())
+          .then(response =>
+            this.setState(
+              (this.state.fullList[i].status = response.data[0].status)
+            )
+          )
+          .catch(err => console.log(err));
+
+        var url1 = "http://localhost:4000/EducationUserView/" + vrID;
+        await fetch(url1)
+          .then(response => response.json())
+          .then(response =>
+            this.setState(
+              (this.state.fullList[i].first_name = response.data[0].first_name),
+              (this.state.fullList[i].last_name = response.data[0].last_name)
+            )
+          )
+          .catch(err => console.log(err));
+      }
+    }
+  };
+
   getValidationRequests = () => {
-    fetch("http://localhost:4000/ValidationRequests")
+    var url = "http://localhost:4000/ValidationRequests/"; //+sessionState.getItem("LoggedUser");
+    fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ validationList: response.data }))
+      .then(() => {
+        this.setState({ fullList: this.state.validationList });
+        this.state.fullList.map(
+          item => (
+            (item.status = ""), (item.first_name = ""), (item.last_name = "")
+          )
+        );
+        this.getStatus();
+      })
       .catch(err => console.log(err));
   };
   render() {
@@ -67,21 +133,21 @@ class Validation extends Component {
                   active={activeItem === "Pending"}
                   onClick={this.handleItemClick}
                   as={Link}
-                  to="/validation/pending"
+                  to="/validation/Pending"
                 />
                 <Menu.Item
                   name="Done"
                   active={activeItem === "Done"}
                   onClick={this.handleItemClick}
                   as={Link}
-                  to="/validation/done"
+                  to="/validation/Done"
                 />
                 <Menu.Item
                   name="Rejected"
                   active={activeItem === "Rejected"}
                   onClick={this.handleItemClick}
                   as={Link}
-                  to="/validation/rejected"
+                  to="/validation/Rejected"
                 />
               </Menu>
               <Segment attached="bottom">
@@ -99,15 +165,15 @@ const RouteMenu = props => (
   <React.Fragment>
     <Switch>
       <Route
-        path="/validation/pending"
+        path="/validation/Pending"
         render={() => <RequestListItems passed={props.item} />}
       />
       <Route
-        path="/validation/done"
+        path="/validation/Done"
         render={() => <RequestListItems passed={props.item} />}
       />
       <Route
-        path="/validation/rejected"
+        path="/validation/Rejected"
         render={() => <RequestListItems passed={props.item} />}
       />
     </Switch>
@@ -117,11 +183,17 @@ const RouteMenu = props => (
 const RequestListItems = props => (
   <List divided relaxed>
     {props.passed.map((listItem, i) => (
-      <List.Item key={i} as={Link} to={`/validation/pending/${listItem.vr_id}`}>
+      <List.Item
+        key={i}
+        as={Link}
+        to={`/validation/${listItem.status}/${listItem.vr_id}`}
+      >
         <List.Icon name="paperclip" size="large" verticalAlign="middle" />
         <List.Content>
           <List.Header color="blue">Request ID {listItem.vr_id}</List.Header>
-          <List.Description>Swarm ID {listItem.swarm_id}</List.Description>
+          <List.Description>
+            by {listItem.first_name} {listItem.last_name}
+          </List.Description>
         </List.Content>
       </List.Item>
     ))}
@@ -131,13 +203,10 @@ const RequestListItems = props => (
 const RouteCertificate = () => (
   <React.Fragment>
     <Switch>
-      <Route exact path="/validation/pending/:vrID" component={DocSign} />
+      <Route exact path="/validation/Pending/:vrID" component={DocSign} />
+      <Route path="/validation/Done/:vrID" component={DisplayDoneCertificate} />
       <Route
-        path="/validation/done/:certname"
-        component={DisplayDoneCertificate}
-      />
-      <Route
-        path="/validation/rejected/:certname"
+        path="/validation/Rejected/:vrID"
         component={DisplayRejectedCertificate}
       />
     </Switch>
@@ -312,13 +381,13 @@ class DocSign extends Component {
 
 const DisplayDoneCertificate = ({ match }) => (
   <Segment>
-    <h3>Validated Certificate displayed here ID: {match.params.certname} </h3>
+    <h3>Certificate with ID: {match.params.vrID} was Validated</h3>
   </Segment>
 );
 
-const DisplayRejectedCertificate = () => (
+const DisplayRejectedCertificate = ({ match }) => (
   <Segment>
-    <h3>Rejected Certificate displayed here</h3>
+    <h3>Certificate with ID: {match.params.vrID} was Rejected</h3>
   </Segment>
 );
 
