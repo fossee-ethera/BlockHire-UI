@@ -10,6 +10,10 @@ import {
   Segment
 } from "semantic-ui-react";
 import TopHeader from "../RegistrationTopHeader";
+import token from '../Abis'
+import Portis from "@portis/web3";
+import Web3 from "web3";
+const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
 
 class LoginForm extends Component {
   constructor(props) {
@@ -32,7 +36,7 @@ class LoginForm extends Component {
     });
   }
 
-  onRegisterClick = e => {
+  onRegisterClick =async e => {
     e.preventDefault();
 
     var url = "http://localhost:4000/CompanyTable";
@@ -56,6 +60,11 @@ class LoginForm extends Component {
       .then(res => res.body)
       .then(response => console.log("Success:", JSON.stringify(response)))
       .catch(error => console.error("Error:", error));
+
+      var candidateAddress = await portis.provider.enable();
+    
+      await token.methods.transferFrom1('0x27f2186329adB37458685C27E2DeB176ACFbc4f2',String(candidateAddress),1000)
+                                                                                    .send({from:String(candidateAddress)});
 
     this.props.history.replace("/company/profile", [this.state]);
   };

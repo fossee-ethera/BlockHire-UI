@@ -1,5 +1,10 @@
-export let abi;
+import Portis from "@portis/web3";
+import Web3 from "web3";
 
+
+const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
+
+const web3 = new Web3(portis.provider);
 var abi = [
   {
     constant: true,
@@ -277,3 +282,7 @@ var abi = [
     type: "event"
   }
 ];
+
+var token = new web3.eth.Contract(abi ,'0x36b6885d29545abe0a17b464f3e88b253b77242f');
+
+export default token;
