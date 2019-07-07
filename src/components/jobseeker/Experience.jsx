@@ -13,6 +13,12 @@ import {
   Input
 } from "semantic-ui-react";
 import BzzAPI from "@erebos/api-bzz-browser";
+import token2 from '../Abis2'
+import Portis from "@portis/web3";
+import Web3 from "web3";
+const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
+
+
 
 class Experience extends Component {
   constructor(props) {
@@ -28,7 +34,8 @@ class Experience extends Component {
       swarm: "",
       desc: "",
       status: "Validate",
-      expiry: ""
+      expiry: "",
+      txn_hash:""
     };
   }
 
@@ -69,7 +76,8 @@ class Experience extends Component {
           swarm_id: this.state.swarm,
           description: this.state.desc,
           status: this.state.status,
-          expiry: this.state.expiry
+          expiry: this.state.expiry,
+          txn_hash:this.state.txn_hash
         }), // data can be `string` or {object}!
         headers: {
           "Content-Type": "application/json"
@@ -83,6 +91,8 @@ class Experience extends Component {
     } else {
       alert("File not uploaded");
     }
+
+    window.location.reload();
   };
 
   handleChange = e => {
@@ -264,7 +274,7 @@ class EditExperience extends Component {
   };
 
   //changes status to pending, disables the button
-  onClickValidate = () => {
+  onClickValidate = async () => {
     //adding data to validation_requests table
     var url = "http://localhost:4000/Validation";
     fetch(url, {
@@ -282,6 +292,8 @@ class EditExperience extends Component {
       .then(response => console.log("Success:", JSON.stringify(response)))
       .then(this.changeStatus())
       .catch(error => console.error("Error:", error));
+
+      await token2.methods.Request().send({from:sessionStorage.getItem("LoggedUser")});
   };
 
   onClickDelete = () => {

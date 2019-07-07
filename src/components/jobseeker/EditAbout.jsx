@@ -61,6 +61,8 @@ export default class EditAbout extends Component {
       .then(res => res.body)
       .then(response => console.log("Success:", JSON.stringify(response)))
       .catch(error => console.error("Error:", error));
+
+    window.location.reload();
   };
 
   render() {
