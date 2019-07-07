@@ -46,7 +46,8 @@ class LoginForm extends Component {
         email: this.state.email,
         dob: this.state.dob,
         about: "",
-        skills: ""
+        skills: "",
+        status: 0
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
