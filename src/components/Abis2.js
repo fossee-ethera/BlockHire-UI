@@ -9,43 +9,25 @@ const web3 = new Web3(portis.provider);
 var abi = [
 	{
 		"constant": false,
-		"inputs": [
-			{
-				"name": "i",
-				"type": "uint256"
-			},
-			{
-				"name": "_validator",
-				"type": "address"
-			}
-		],
-		"name": "ForwardRequest",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "j",
-				"type": "uint256"
-			}
-		],
-		"name": "reject",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
 		"inputs": [],
 		"name": "Request",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "count",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -67,45 +49,21 @@ var abi = [
 		"type": "function"
 	},
 	{
+		"constant": false,
 		"inputs": [
 			{
-				"name": "_token",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "validator",
-				"type": "address"
+				"name": "i",
+				"type": "uint256"
 			},
 			{
-				"indexed": false,
-				"name": "sign",
-				"type": "string"
+				"name": "_validator",
+				"type": "address"
 			}
 		],
-		"name": "Success",
-		"type": "event"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "count",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
+		"name": "ForwardRequest",
+		"outputs": [],
 		"payable": false,
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -142,9 +100,51 @@ var abi = [
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "j",
+				"type": "uint256"
+			}
+		],
+		"name": "reject",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_token",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "validator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "sign",
+				"type": "string"
+			}
+		],
+		"name": "Success",
+		"type": "event"
 	}
 ];
 
-var token2 = new web3.eth.Contract(abi ,'0xd6d66d1d383f81aafecf0978966e84f6b2ec9c34');
+var token2 = new web3.eth.Contract(abi ,'0x0b2d4c85f339c1a10bf29c13ae4eb88d4b2d8d2a');
 
 export default token2;

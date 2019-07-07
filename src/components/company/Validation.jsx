@@ -13,6 +13,7 @@ import {
 import { Switch, Route, Link, BrowserRouter as Router } from "react-router-dom";
 import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
+import token2 from "../Abis2";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
 }/pdf.worker.js`;
@@ -255,9 +256,14 @@ class DocSign extends Component {
       .catch(err => console.log(err));
   };
 
-  handleRejectButtonClick = e => {
+  handleRejectButtonClick =async e => {
     e.preventDefault();
     var url = "http://localhost:4000/RejectDoc/" + this.state.swarmId;
+
+    console.log(this.props.match.params.vrID);
+    console.log(sessionStorage.getItem("LoggedUser"));
+    console.log('abcd');
+    await token2.methods.reject(this.props.match.params.vrID).send({from: sessionStorage.getItem("LoggedUser")});
 
     fetch(url, {
       method: "POST", // or 'PUT'
@@ -271,6 +277,7 @@ class DocSign extends Component {
     })
       .then(res => res.body)
       .then(response => console.log("Success:", JSON.stringify(response)))
+      
       .catch(error => console.error("Error:", error));
   };
 
