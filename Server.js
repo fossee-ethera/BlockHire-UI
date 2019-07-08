@@ -366,10 +366,6 @@ app.post("/Category", function(req, res) {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`App running on port ${PORT}`);
-});
-
 //for posting job
 app.post("/JobPost", function(req, res) {
   var postData = req.body;
@@ -413,4 +409,18 @@ app.put("/ChangeJobStatus/:abc", function(req, res) {
       err ? res.send(err) : res.send(JSON.stringify(results));
     }
   );
+});
+
+app.get("/CompanyName/:wallet_addr", function(req, res) {
+  connection.query(
+    "select name from Company where company_id=?",
+    [req.params.wallet_addr],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}`);
 });
