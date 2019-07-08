@@ -16,7 +16,6 @@ import {
 import { Link, BrowserRouter, Route } from "react-router-dom";
 
 import CertificateVerification from "./CertificateVerification";
-import CeritificateVerification from "./CertificateVerification";
 
 class MinimalProfileView extends Component {
   constructor(props) {
@@ -195,9 +194,9 @@ class EditExperience extends Component {
   }
 }
 
-DisplayVerification = props => (
+const DisplayVerification = props => (
   <BrowserRouter>
-    <Route path="/verify" component={CeritificateVerification} />
+    <Route path="/verify" component={CertificateVerification} />
   </BrowserRouter>
 );
 /*

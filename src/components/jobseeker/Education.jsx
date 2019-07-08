@@ -44,7 +44,7 @@ class Education extends Component {
       Swarm_id: "",
       description: "",
       level: "",
-      status: "",
+      status: "Validate",
       txhash: ""
     };
   }
