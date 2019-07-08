@@ -42,7 +42,9 @@ export default class EditAbout extends Component {
 
   onSaveEdit = e => {
     //update in backend
-    var url = "http://localhost:4000/EditAboutUser/" + this.props.pass.user_id;
+    var url =
+      "http://localhost:4000/EditAboutUser/" +
+      sessionStorage.getItem("LoggedUser");
     console.log(url);
 
     fetch(url, {

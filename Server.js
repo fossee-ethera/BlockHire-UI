@@ -19,8 +19,8 @@ app.use(
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
-  database: "GethHired"
+  password: "mysql",
+  database: "gethdb"
 });
 
 connection.connect(function(err) {
@@ -113,6 +113,16 @@ app.get("/About/:wallet_addr", function(req, res) {
 app.get("/Experience/:wallet_addr", function(req, res) {
   connection.query(
     "select * from Experience where user_id=?",
+    [req.params.wallet_addr],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/Education/:wallet_addr", function(req, res) {
+  connection.query(
+    "select * from Education where user_id=?",
     [req.params.wallet_addr],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
@@ -220,11 +230,21 @@ app.put("/changeExperienceState/:swarm_id", function(req, res) {
   );
 });
 
+app.put("/changeEducationState/:swarm_id", function(req, res) {
+  connection.query(
+    "UPDATE Education SET status=?  WHERE swarm_id =?",
+    [req.body.status, req.params.swarm_id],
+    function(err, results, fields) {
+      err ? res.send(err) : res.send(JSON.stringify(results));
+    }
+  );
+});
+
 //update certificate status Done after validating
 app.post("/AcceptDoc/:swarm_id", function(req, res) {
   connection.query(
     "update Experience set status='Done',txn_hash=? where swarm_id =?",
-    [req.body.txn_hash,req.params.swarm_id],
+    [req.body.txn_hash, req.params.swarm_id],
     function(err, results, fields) {
       err ? res.send(err) : res.send(JSON.stringify(results));
     }
@@ -245,6 +265,17 @@ app.post("/RejectDoc/:swarm_id", function(req, res) {
 app.delete("/DeleteExperience", function(req, res) {
   connection.query(
     "DELETE FROM `Experience` WHERE `swarm_id`=?",
+    [req.body.swarm_id],
+    function(error, results, fields) {
+      if (error) throw error;
+      res.end("Record has been deleted!");
+    }
+  );
+});
+
+app.delete("/DeleteEducation", function(req, res) {
+  connection.query(
+    "DELETE FROM `Education` WHERE `swarm_id`=?",
     [req.body.swarm_id],
     function(error, results, fields) {
       if (error) throw error;
@@ -311,6 +342,18 @@ app.post("/AddExperience", function(req, res) {
   });
 });
 
+app.post("/AddEducation", function(req, res) {
+  var postData = req.body;
+  connection.query("INSERT INTO Education SET ?", postData, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
+  });
+});
+
 app.post("/Category", function(req, res) {
   var postData = req.body;
   connection.query("INSERT INTO Category SET ?", postData, function(
@@ -328,14 +371,17 @@ app.listen(PORT, () => {
 });
 
 //for posting job
-app.post('/JobPost', function (req, res) {
-  var postData  = req.body;
-  connection.query('INSERT INTO Job_Post SET ?', postData, function (error, results, fields) {
-   if (error) throw error;
-   res.end(JSON.stringify(results));
- });
+app.post("/JobPost", function(req, res) {
+  var postData = req.body;
+  connection.query("INSERT INTO Job_Post SET ?", postData, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
+  });
 });
-
 
 app.get("/jobscandidate", function(req, res) {
   connection.query(
@@ -346,12 +392,15 @@ app.get("/jobscandidate", function(req, res) {
   );
 });
 
-
-app.post('/applyjob', function(req, res) {
+app.post("/applyjob", function(req, res) {
   var postData = req.body;
-  connection.query('INSERT INTO JobRequest SET ?',postData, function (error, results, fields) {
-      if(error) throw error;
-      res.end(JSON.stringify(results));
+  connection.query("INSERT INTO JobRequest SET ?", postData, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
   });
 });
 
