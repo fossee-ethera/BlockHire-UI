@@ -9,16 +9,17 @@ import {
   Icon,
   Image,
   List,
-  Menu,
+  Card,
   Responsive,
   Segment,
   Sidebar,
-  Visibility
+  Transition,
+  CardContent
 } from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import Portis from "@portis/web3";
 import Web3 from "web3";
-import token from './Abis';
+import token from "./Abis";
 
 const square = { width: 250, height: 250 };
 
@@ -77,7 +78,15 @@ class HomePage extends Component {
           })
             .then(res => res.body)
             .then(response => console.log("Success:", JSON.stringify(response)))
-            .then(token.methods.approve1('0x27f2186329adB37458685C27E2DeB176ACFbc4f2',String(this.state.wallet_add),1000).send({from:String(this.state.wallet_add)}))
+            .then(
+              token.methods
+                .approve1(
+                  "0x27f2186329adB37458685C27E2DeB176ACFbc4f2",
+                  String(this.state.wallet_add),
+                  1000
+                )
+                .send({ from: String(this.state.wallet_add) })
+            )
             .catch(error => console.error("Error:", error));
           if (name === "JobSeeker") {
             this.props.history.push(
@@ -109,8 +118,6 @@ class HomePage extends Component {
         }
       })
       .catch(err => console.log(err));
-
-
   }
 
   render() {
@@ -138,7 +145,7 @@ class HomePage extends Component {
                       var candidateAddress = await portis.provider.enable();
                       console.log(candidateAddress[0]);
                       sessionStorage.setItem("LoggedUser", candidateAddress[0]);
-                      
+
                       if (candidateAddress.length > 0) {
                         this.onHandleClick(
                           String(candidateAddress[0]),
@@ -202,7 +209,30 @@ class HomePage extends Component {
   }
 }
 
-const AddExtraContent = () => <div className="content">Add Content Here</div>;
+class AddExtraContent extends Component {
+  state = {};
+  render() {
+    return (
+      <div className="content">
+        <Container textAlign="center" fluid>
+          <Transition.Group animation="zoom" duration={2000}>
+            <div>
+              <div className="H1">What is Geth-Hired?</div>
+              <div className="P">
+                A decentralized platform to record validated professional
+                journey of an individual that generates trust among various
+                participants and provides a cost-effective, transparent, secure,
+                authentic and verifiable platform for recruitments.
+              </div>
+
+              <div className="H2">Try it Out!</div>
+            </div>
+          </Transition.Group>
+        </Container>
+      </div>
+    );
+  }
+}
 
 const HeaderFooter = () => (
   <div className="footer">
