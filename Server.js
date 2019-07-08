@@ -19,12 +19,33 @@ app.use(
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "mysql",
-  database: "gethdb"
+  password: "password",
+  database: "GethHired"
 });
 
 connection.connect(function(err) {
   err ? console.log(err) : console.log(connection);
+});
+
+//akshat functions
+app.get("/Company/Jobs/:abc", function(req, res) {
+  connection.query(
+    "select * from Job_Post where company_id =?",
+    [req.params.abc],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/CompanyJobs/CandidatesForJob", function(req, res) {
+  connection.query(
+    //"select jb.candidate_id, jb.status, jb.job_id, us.first_name, us.last_name from JobRequest as jb inner join Users as us on jb.candidate_id = us.user_id",
+    "select * from JobCandidate",
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
 });
 
 //require("./routes/html-routes")(app, connection);
@@ -202,8 +223,8 @@ app.put("/changeExperienceState/:swarm_id", function(req, res) {
 //update certificate status Done after validating
 app.post("/AcceptDoc/:swarm_id", function(req, res) {
   connection.query(
-    "update Experience set status='Done' where swarm_id =?",
-    [req.params.swarm_id],
+    "update Experience set status='Done',txn_hash=? where swarm_id =?",
+    [req.body.txn_hash,req.params.swarm_id],
     function(err, results, fields) {
       err ? res.send(err) : res.send(JSON.stringify(results));
     }
@@ -304,4 +325,32 @@ app.post("/Category", function(req, res) {
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}`);
+});
+
+//for posting job
+app.post('/JobPost', function (req, res) {
+  var postData  = req.body;
+  connection.query('INSERT INTO Job_Post SET ?', postData, function (error, results, fields) {
+   if (error) throw error;
+   res.end(JSON.stringify(results));
+ });
+});
+
+
+app.get("/jobscandidate", function(req, res) {
+  connection.query(
+    "select Job_Post.id, Job_Post.description, Job_Post.type, Job_Post.designation, Job_Post.salary, Job_Post.industry, Job_Post.duration, Job_Post.skills, Company.name, JobRequest.status from Job_Post INNER JOIN Company on Job_Post.company_id = Company.company_id LEFT OUTER JOIN JobRequest on Job_Post.id = JobRequest.Job_id",
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+
+app.post('/applyjob', function(req, res) {
+  var postData = req.body;
+  connection.query('INSERT INTO JobRequest SET ?',postData, function (error, results, fields) {
+      if(error) throw error;
+      res.end(JSON.stringify(results));
+  });
 });
