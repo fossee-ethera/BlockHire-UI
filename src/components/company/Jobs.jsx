@@ -18,6 +18,13 @@ import {
   CardHeader,
   CardContent
 } from "semantic-ui-react";
+import ModalExampleScrollingContent from './JobModal';
+
+import token from '../Abis'
+import Portis from "@portis/web3";
+import Web3 from "web3";
+const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
+const web3 = new Web3(portis.provider);
 
 class Jobs extends Component {
   state = {
@@ -27,9 +34,10 @@ class Jobs extends Component {
 
   async componentDidMount() {
     await this.getJobInfo();
+    
   }
 
-  getJobInfo = async _ => {
+  getJobInfo = _ => {
     console.log("yeh sessin storage");
     console.log(sessionStorage.getItem("LoggedUser"));
 
@@ -78,6 +86,13 @@ class Jobs extends Component {
     } else {
       //    this.state.about[0].wallet_add = this.props.location.state[0].wallet_add;
       return (
+        <div>
+          <h1>Fossee</h1>
+          <Modal trigger={<Button onClick={async()=>{await token.methods.approve1(sessionStorage.getItem("LoggedUser"),'0x27f2186329adB37458685C27E2DeB176ACFbc4f2',100).send({from:sessionStorage.getItem("LoggedUser")})
+                                                                        .on('transactionHash', function(hash){console.log(hash)})    
+        }}>Post Job</Button>} closeIcon>
+            <ModalExampleScrollingContent/>
+          </Modal>
         <Container text>
           <div style={{ marginTop: 100 }}>
             {/* <Item.Group divided> */}
@@ -160,6 +175,7 @@ class Jobs extends Component {
             {/* </Item.Group> */}
           </div>
         </Container>
+        </div>
       );
     }
   }
