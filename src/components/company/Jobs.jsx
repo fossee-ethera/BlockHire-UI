@@ -34,10 +34,9 @@ class Jobs extends Component {
 
   async componentDidMount() {
     await this.getJobInfo();
-    
   }
 
-  getJobInfo = _ => {
+  getJobInfo = async _ => {
     console.log("yeh sessin storage");
     console.log(sessionStorage.getItem("LoggedUser"));
 
@@ -76,6 +75,31 @@ class Jobs extends Component {
       .catch(err => console.log(err));
   };
 
+  shortlist = async (c,id) => {
+    if (c.status === "Applied") {
+      c.status = "Shortlisted";
+    } else {
+      c.status = "Applied";
+    }
+    this.setState({});
+
+    var url = "http://localhost:4000/ChangeJobStatus/" + c.candidate_id;
+    await fetch(url, {
+      method: "PUT",
+      mode: "cors",
+      body: JSON.stringify({
+        status: c.status,
+        job_id:id
+      }), // data can be `string` or {object}!
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.body)
+      .then(response => console.log("Success:", JSON.stringify(response)))
+      .catch(error => console.error("Error:", error));
+  };
+
   render() {
     if (this.state.jobpostlist.length == 0) {
       return (
@@ -103,7 +127,7 @@ class Jobs extends Component {
                     <Grid.Column width={5}>
                       <Label color="green">Job Id: {job.id}</Label>
                     </Grid.Column>
-                    <Grid.Column width={6} centered>
+                    <Grid.Column width={6}>
                       <Modal
                         trigger={
                           <Button
@@ -117,14 +141,35 @@ class Jobs extends Component {
                         }
                       >
                         <Segment>
-                          {this.state.jobCandidateList
-                            .filter(el => el.job_id === job.id)
-                            .map(Candidate => (
-                              <List key={job.id}>
-                                {Candidate.first_name} {Candidate.last_name}
-                                {Candidate.status}
-                              </List>
-                            ))}
+                          <List>
+                            {this.state.jobCandidateList
+                              .filter(el => el.job_id === job.id)
+                              .map(Candidate => (
+                                <List.Item key={job.id}>
+                                  <List.Header as="a">
+                                    {Candidate.first_name} {Candidate.last_name}
+                                  </List.Header>
+
+                                  <List.Description>
+                                    <Button
+                                      floated="right"
+                                      onClick={async () => {
+                                        return window.confirm(
+                                          "Are you sure you want to shortlist ?"
+                                        )
+                                          ? await this.shortlist(Candidate,job.id)
+                                          : false;
+                                      }}
+                                      disabled={
+                                        Candidate.status === "Shortlisted"
+                                      }
+                                    >
+                                      Short list
+                                    </Button>
+                                  </List.Description>
+                                </List.Item>
+                              ))}
+                          </List>
                         </Segment>
                       </Modal>
                     </Grid.Column>
@@ -182,39 +227,3 @@ class Jobs extends Component {
 }
 
 export default Jobs;
-
-{
-  /* <Item> 
-<Item.Content verticalAlign="top">
-  <Item.Header>
-    <b>Job Title:</b> {job.designation}
-    <br />
-  </Item.Header>
-  <Item.Description>
-    <p />
-    <b>Job ID:</b> {job.id}
-    <br />
-    <b>Industry:</b> {job.industry}
-    <br />
-    <b>Job Type:</b> {job.type}
-    <br />
-    <b>Salary:</b> {job.salary}
-    <br />
-    <b>Duration:</b> {job.duration}
-    <br />
-    <b>Job Description:</b> {job.description}
-    <br />
-    <b>Desired Skills and Responsibilities:</b> {job.skills}
-    <br />
-  </Item.Description>
-  <Item.Extra>
-    <Button primary
-    onClick={
-      
-    }
-    >
-      Show Applied Candidates</Button>
-  </Item.Extra>
-</Item.Content>
-  </Item>*/
-}

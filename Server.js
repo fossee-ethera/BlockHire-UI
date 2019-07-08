@@ -40,8 +40,8 @@ app.get("/Company/Jobs/:abc", function(req, res) {
 
 app.get("/CompanyJobs/CandidatesForJob", function(req, res) {
   connection.query(
-    //"select jb.candidate_id, jb.status, jb.job_id, us.first_name, us.last_name from JobRequest as jb inner join Users as us on jb.candidate_id = us.user_id",
-    "select * from JobCandidate",
+    "select jb.candidate_id, jb.status, jb.job_id, us.first_name, us.last_name from JobRequest as jb inner join Users as us on jb.candidate_id = us.user_id",
+    //"select * from JobCandidate",
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
     }
@@ -353,4 +353,15 @@ app.post('/applyjob', function(req, res) {
       if(error) throw error;
       res.end(JSON.stringify(results));
   });
+});
+
+//for viewing shortlisted candidates in company/jobs
+app.put("/ChangeJobStatus/:abc", function(req, res) {
+  connection.query(
+    "UPDATE JobRequest SET status=?  WHERE candidate_id =? and job_id=?",
+    [req.body.status, req.params.abc, req.body.job_id],
+    function(err, results, fields) {
+      err ? res.send(err) : res.send(JSON.stringify(results));
+    }
+  );
 });
