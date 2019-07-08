@@ -33,6 +33,7 @@ class EditProfilePage extends Component {
           about: response.data
         })
       )
+      .then(() => this.setState({}))
       .catch(err => console.log(err));
     console.log(this.state.about);
   };

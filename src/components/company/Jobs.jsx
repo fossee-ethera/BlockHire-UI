@@ -104,7 +104,13 @@ class Jobs extends Component {
     if (this.state.jobpostlist.length == 0) {
       return (
         <div>
-          <h3>Loading</h3>
+           <h1>Loading</h1>
+          <Modal trigger={<Button onClick={async()=>{await token.methods.approve1(sessionStorage.getItem("LoggedUser"),'0x27f2186329adB37458685C27E2DeB176ACFbc4f2',100).send({from:sessionStorage.getItem("LoggedUser")})
+                                                                        .on('transactionHash', function(hash){console.log(hash)})    
+        }}>Post Job</Button>} closeIcon>
+            <ModalExampleScrollingContent/>
+          </Modal>
+         
         </div>
       );
     } else {

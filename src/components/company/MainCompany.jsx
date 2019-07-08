@@ -9,6 +9,8 @@ import Account from "./Account";
 import Notifications from "./Notifications";
 import Validation from "./Validation";
 
+import MinimalProfileView from "./MinimalProfile";
+
 const MainCompany = () => {
   if (sessionStorage.getItem("LoggedUser") === null) {
     return <div>Page not found!</div>;
@@ -18,10 +20,11 @@ const MainCompany = () => {
         <TopBar />
         <Switch>
           <Route exact path="/company/profile" component={EditProfilePage} />
-          <Route path="/jobs" component={Jobs} />
-          <Route path="/account" component={Account} />
-          <Route path="/validation" component={Validation} />
-          <Route path="/notifications" component={Notifications} />
+          <Route exact path="/jobs" component={Jobs} />
+          <Route exact path="/account" component={Account} />
+          <Route exact path="/validation" component={Validation} />
+          <Route exact path="/notifications" component={Notifications} />
+          <Route path="/profileview/:user_id" component={MinimalProfileView} />
         </Switch>
       </Router>
     );

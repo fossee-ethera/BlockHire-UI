@@ -9,7 +9,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
   pdfjs.version
 }/pdf.worker.js`;
 
+<<<<<<< HEAD
 class CertificateVerification extends Component {
+=======
+class CeritificateVerification extends Component {
+>>>>>>> 6323a6c603fa71ee6b07a45c57422720bbff38ae
   constructor(props) {
     super(props);
 
@@ -209,4 +213,8 @@ class CertificateVerification extends Component {
   }
 }
 
+<<<<<<< HEAD
 export default CertificateVerification;
+=======
+export default CeritificateVerification;
+>>>>>>> 6323a6c603fa71ee6b07a45c57422720bbff38ae
