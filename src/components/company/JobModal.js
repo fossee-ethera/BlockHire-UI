@@ -56,9 +56,6 @@ class FormExampleSubcomponentControl extends Component {
         event.preventDefault();
         var url = "http://localhost:4000/JobPost";
 
-        await token.methods.transferFrom1(sessionStorage.getItem("LoggedUser"),'0x27f2186329adB37458685C27E2DeB176ACFbc4f2',100).send({from:sessionStorage.getItem("LoggedUser")})
-        .on('transactionHash', function(hash){console.log(hash)});
-
     fetch(url, {
         method: "POST", // or 'PUT'
         mode: "cors",
@@ -79,6 +76,8 @@ class FormExampleSubcomponentControl extends Component {
       })
         .then(res => res.body)
         .then(response => console.log("Success:", JSON.stringify(response)))
+        .then(token.methods.transferFrom1(sessionStorage.getItem("LoggedUser"),'0x27f2186329adB37458685C27E2DeB176ACFbc4f2',100).send({from:sessionStorage.getItem("LoggedUser")}))
+        .on('transactionHash', function(hash){console.log(hash)})
         .catch(error => console.error("Error:", error));
     
     };

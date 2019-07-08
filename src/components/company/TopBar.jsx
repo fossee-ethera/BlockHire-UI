@@ -1,15 +1,33 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
-import { Menu, Dropdown, Search } from "semantic-ui-react";
+import { Menu, Dropdown, Search, Grid,Modal,Label,Segment } from "semantic-ui-react";
+import Web3 from 'web3';
+import Portis from  '@portis/web3';
+import { async } from "q";
+import token from '../Abis';
 
+const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
+const web3 = new Web3(portis.provider);
+var balance;
 class TopBar extends Component {
+  state = {
+    activeItem:"profile",
+    tokens:''
+  }
   state = { activeItem: "profile" };
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+  async componentDidMount(){
+    const bal = await token.methods.balanceOf(String(sessionStorage.getItem("LoggedUser"))).call()
+ balance = bal.toNumber();
+ this.setState({ tokens :balance });
+}
   render() {
     const { activeItem } = this.state;
+    
 
     return (
+     
       <Menu inverted fixed="top" size="huge">
         <Menu.Menu position="left" style={{ marginLeft: 150 }}>
           <Menu.Item>
@@ -50,13 +68,35 @@ class TopBar extends Component {
             as={Link}
             to="/notifications"
           />
-          <Menu.Item
-            name="account"
-            active={activeItem === "account"}
-            onClick={this.handleItemClick}
-            as={Link}
-            to="/account"
-          />
+           <Modal trigger={
+
+<Menu.Item
+name="account"
+active={activeItem === "account"}
+onClick={                 
+this.handleItemClick
+ }
+as={Link}
+to="/account"
+/>
+
+} closeIcon >
+
+<Segment>
+
+<Grid.Row centered>
+    
+  <Label color="blue">
+      Balance
+    </Label>
+    <Label color="brown">{this.state.tokens}</Label> <Label color='black'>GH</Label>
+ 
+</Grid.Row>
+
+
+</Segment>
+
+</Modal>
           <Dropdown item text="Settings">
             <Dropdown.Menu>
               <Dropdown.Item>Change Password</Dropdown.Item>
