@@ -10,7 +10,7 @@ class TopHeader extends Component {
           <div className="alignment">
             <div />
             <div>
-              <h1>Geth-Hire </h1>
+              <h1>Geth-Hired </h1>
             </div>
           </div>
         </div>

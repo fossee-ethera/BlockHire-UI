@@ -13,12 +13,10 @@ import {
   Input
 } from "semantic-ui-react";
 import BzzAPI from "@erebos/api-bzz-browser";
-import token2 from '../Abis2'
+import token2 from "../Abis2";
 import Portis from "@portis/web3";
 import Web3 from "web3";
 const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
-
-
 
 class Experience extends Component {
   constructor(props) {
@@ -35,7 +33,7 @@ class Experience extends Component {
       desc: "",
       status: "Validate",
       expiry: "",
-      txn_hash:""
+      txn_hash: ""
     };
   }
 
@@ -58,13 +56,13 @@ class Experience extends Component {
       .catch(err => console.log(err));
   };
 
-  handleClick = e => {
+  handleClick = async e => {
     e.preventDefault();
 
     if (this.state.swarm.length > 0) {
       var url = "http://localhost:4000/AddExperience";
 
-      fetch(url, {
+      await fetch(url, {
         method: "POST", // or 'PUT'
         mode: "cors",
         body: JSON.stringify({
@@ -77,7 +75,7 @@ class Experience extends Component {
           description: this.state.desc,
           status: this.state.status,
           expiry: this.state.expiry,
-          txn_hash:this.state.txn_hash
+          txn_hash: this.state.txn_hash
         }), // data can be `string` or {object}!
         headers: {
           "Content-Type": "application/json"
@@ -92,7 +90,7 @@ class Experience extends Component {
       alert("File not uploaded");
     }
 
-    window.location.reload();
+    // window.location.reload();
   };
 
   handleChange = e => {
@@ -277,12 +275,13 @@ class EditExperience extends Component {
   onClickValidate = async () => {
     //adding data to validation_requests table
     var url = "http://localhost:4000/Validation";
-    fetch(url, {
+    await fetch(url, {
       method: "POST", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
         swarm_id: this.state.swarmId,
-        category: "Experience"
+        category: "Experience",
+        company_id: ""
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -293,7 +292,9 @@ class EditExperience extends Component {
       .then(this.changeStatus())
       .catch(error => console.error("Error:", error));
 
-      await token2.methods.Request().send({from:sessionStorage.getItem("LoggedUser")});
+    await token2.methods
+      .Request()
+      .send({ from: sessionStorage.getItem("LoggedUser") });
   };
 
   onClickDelete = () => {

@@ -9,7 +9,7 @@ import Account from "./Account";
 import Notifications from "./Notifications";
 import Validation from "./Validation";
 
-import MinimalProfileView from "./MinimalProfile";
+import MinimalProfileView from "./MinimalProfileView";
 
 const MainCompany = () => {
   if (sessionStorage.getItem("LoggedUser") === null) {
@@ -22,7 +22,7 @@ const MainCompany = () => {
           <Route exact path="/company/profile" component={EditProfilePage} />
           <Route exact path="/jobs" component={Jobs} />
           <Route exact path="/account" component={Account} />
-          <Route exact path="/validation" component={Validation} />
+          <Route path="/validation" component={Validation} />
           <Route exact path="/notifications" component={Notifications} />
           <Route path="/profileview/:user_id" component={MinimalProfileView} />
         </Switch>

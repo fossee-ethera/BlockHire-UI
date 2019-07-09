@@ -40,14 +40,14 @@ export default class EditAbout extends Component {
     });
   };
 
-  onSaveEdit = e => {
+  onSaveEdit = async e => {
     //update in backend
     var url =
       "http://localhost:4000/EditAboutUser/" +
       sessionStorage.getItem("LoggedUser");
     console.log(url);
 
-    fetch(url, {
+    await fetch(url, {
       method: "PUT", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({

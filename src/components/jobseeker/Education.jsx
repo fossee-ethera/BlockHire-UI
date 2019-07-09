@@ -286,7 +286,8 @@ class EditEducation extends Component {
       mode: "cors",
       body: JSON.stringify({
         swarm_id: this.state.swarmId,
-        category: "Education"
+        category: "Education",
+        company_id: ""
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"

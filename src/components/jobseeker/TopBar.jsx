@@ -1,19 +1,25 @@
 import React, { Component } from "react";
 import "../styles/TopBar.css";
 import { Link } from "react-router-dom";
-import { Menu, Dropdown, Search,Modal, Segment,Grid,Label } from "semantic-ui-react";
-import Web3 from 'web3';
-import Portis from  '@portis/web3';
+import {
+  Menu,
+  Dropdown,
+  Search,
+  Modal,
+  Segment,
+  Grid,
+  Label
+} from "semantic-ui-react";
+import Web3 from "web3";
+import Portis from "@portis/web3";
 import { async } from "q";
-import token from '../Abis';
+import token from "../Abis";
 
 const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
 const web3 = new Web3(portis.provider);
 
 class TopBar extends Component {
-  state = {
-   
-  };
+  state = {};
   render() {
     return (
       <div className="topbar">
@@ -22,7 +28,7 @@ class TopBar extends Component {
     );
   }
 }
-console.log("qwertyiop")
+console.log("qwertyiop");
 
 const SearchBar = () => (
   <div className="search">
@@ -33,15 +39,17 @@ const SearchBar = () => (
 var balance;
 
 class MenuBar extends Component {
-  state = { 
+  state = {
     activeItem: "profile",
-    tokens:''
-};
+    tokens: ""
+  };
 
- async componentDidMount(){
-      const bal = await token.methods.balanceOf(String(sessionStorage.getItem("LoggedUser"))).call()
-   balance = bal.toNumber();
-   this.setState({ tokens :balance });
+  async componentDidMount() {
+    const bal = await token.methods
+      .balanceOf(String(sessionStorage.getItem("LoggedUser")))
+      .call();
+    balance = bal.toNumber();
+    this.setState({ tokens: balance });
   }
 
   //  async getBalance(){
@@ -62,13 +70,9 @@ class MenuBar extends Component {
   //   this.state.bal = bal.toNumber();
   // }
 
-
   handleItemClick = ({ name }) => {
-    this.setState({ activeItem: name }); 
-  }
-  
-
-
+    this.setState({ activeItem: name });
+  };
 
   render() {
     const { activeItem } = this.state;
@@ -78,7 +82,7 @@ class MenuBar extends Component {
         <Menu.Menu position="left" style={{ marginLeft: 150 }}>
           <Menu.Item>
             {" "}
-            <h2>BlockHire</h2>
+            <h2>Geth-Hired</h2>
           </Menu.Item>
           <Menu.Item>
             {" "}
@@ -107,36 +111,27 @@ class MenuBar extends Component {
             as={Link}
             to="/notifications"
           />
-          <Modal trigger={
-
-                <Menu.Item
+          <Modal
+            trigger={
+              <Menu.Item
                 name="account"
                 active={activeItem === "account"}
-                onClick={                 
-                this.handleItemClick
-                 }
+                onClick={this.handleItemClick}
                 as={Link}
                 to="/account"
-                />
-
-          } closeIcon >
-
-              <Segment>
-
+              />
+            }
+            closeIcon
+          >
+            <Segment>
               <Grid.Row centered>
-                    
-                  <Label color="blue">
-                      Balance
-                    </Label>
-                    <Label color="brown">{this.state.tokens}</Label> <Label color='black'>GH</Label>
-                 
-                </Grid.Row>
-               
-
-              </Segment>
-
+                <Label color="blue">Balance</Label>
+                <Label color="brown">{this.state.tokens}</Label>{" "}
+                <Label color="black">GH</Label>
+              </Grid.Row>
+            </Segment>
           </Modal>
-        
+
           <Dropdown item text="Settings">
             <Dropdown.Menu>
               <Dropdown.Item>Change Password</Dropdown.Item>

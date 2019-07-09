@@ -8,7 +8,7 @@ import JobSeekerProfile from "./jobseeker/EditProfilePage";
 import CompanyProfile from "./company/EditProfilePage";
 import MainJobSeeker from "./jobseeker/MainJobSeeker";
 import MainCompany from "./company/MainCompany";
-import MinimalProfileView from "./company/MinimalProfile";
+import MinimalProfileView from "./company/MinimalProfileView";
 // to not get confused with the History component in react-router.
 
 const Main = () => (
@@ -17,7 +17,7 @@ const Main = () => (
       <Route path="/profileview/:user_id" component={MinimalProfileView} />
       <Route exact path="/jobs" component={MainCompany} />
       <Route exact path="/account" component={MainCompany} />
-      <Route exact path="/validation" component={MainCompany} />
+      {/* <Route path="/validation" component={MainCompany} /> */}
       <Route exact path="/notifications" component={MainCompany} />
       <Route exact path="/jobseeker/profile" component={MainJobSeeker} />
       <Route exact path="/company/profile" component={MainCompany} />

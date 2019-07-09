@@ -13,13 +13,16 @@ import {
   Header,
   Icon
 } from "semantic-ui-react";
+import { Link, BrowserRouter, Route,Switch } from "react-router-dom";
+
+import CertificateVerification from "./CertificateVerification";
 
 class MinimalProfileView extends Component {
   constructor(props) {
     super(props);
     console.log("im minimal constructor");
     this.state = {
-      user: "0x4ab372865dd07acffba20ec84c0c60ef8bf84ae0",
+      user: this.props.match.params.user_id,
       about: []
     };
   }
@@ -109,6 +112,7 @@ class MinimalExperience extends Component {
         {this.state.exp_data.map((listItem, i) => (
           <EditExperience
             key={i}
+            user={listItem.user_id}
             jobtitle={listItem.job_title}
             org={listItem.organisation}
             from={listItem.from}
@@ -150,57 +154,58 @@ class EditExperience extends Component {
 
   render() {
     return (
-      <Segment>
+      <Container fluid>
         <Grid>
-          <Grid.Column width={11}>
-            {/* Add edit options here */}
+          <Grid.Row>
+            <Grid.Column width={11}>
+              {/* Add edit options here */}
 
-            <h3>{this.props.jobtitle}</h3>
-            <h3>{this.props.org}</h3>
-            <h4>From {this.props.from}</h4>
-            <h4>To {this.props.to}</h4>
-            <h5>{this.props.desc}</h5>
-            <h5>{this.props.expiry}</h5>
-            <Modal
-              trigger={
-                <Button
-                  onClick={this.onClickVerification}
-                  primary
-                  // disabled={this.state.cert_state !== "Validated"}
-                >
-                  Verify
-                </Button>
-              }
-              closeIcon
-            >
-              <Header icon="question circle outline" content="Sign Document" />
-              <Modal.Content>
-                <h3>Are you sure you want to verify this document?</h3>
-                <h3>
-                  *** you have pay transaction fees with additional charges for
-                  certificated verification
-                </h3>
-              </Modal.Content>
-              <Modal.Actions>
-                <Button onClick={this.handleSignButtonClick} color="green">
-                  <Icon name="checkmark" /> Yes
-                </Button>
-              </Modal.Actions>
-            </Modal>
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <Step.Group ordered vertical size="tiny">
-              <Step completed={this.props.c_status !== "Validate"}>
-                Requested
-              </Step>
-              <Step completed={this.props.c_status === "Done"}>Validated</Step>
-            </Step.Group>
-          </Grid.Column>
+              <h3>{this.props.jobtitle}</h3>
+              <h3>{this.props.org}</h3>
+              <h4>From {this.props.from}</h4>
+              <h4>To {this.props.to}</h4>
+              <h5>{this.props.desc}</h5>
+              <h5>{this.props.expiry}</h5>
+
+              <Button
+                as={Link}
+                to={`profileview/verify/${this.props.user}`}
+                primary
+                // disabled={this.state.cert_state !== "Validated"}
+              >
+                Verify
+              </Button>
+            </Grid.Column>
+            <Grid.Column width={5}>
+              <Step.Group ordered vertical size="tiny">
+                <Step completed={this.props.c_status !== "Validate"}>
+                  Requested
+                </Step>
+                <Step completed={this.props.c_status === "Done"}>
+                  Validated
+                </Step>
+              </Step.Group>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <DisplayVerification />
+          </Grid.Row>
         </Grid>
-      </Segment>
+      </Container>
     );
   }
 }
+
+const DisplayVerification = _ => (
+  <BrowserRouter>
+  <Switch>
+    <Route
+      path="profileview/verify/:user"
+      component={CertificateVerification}
+    />
+    </Switch>
+  </BrowserRouter>
+);
 
 class MinimalEducation extends Component {
   constructor(props) {
@@ -271,52 +276,40 @@ class EditEducation extends Component {
     return (
       <Segment>
         <Grid>
-          <Grid.Column width={11}>
-            {/* Add edit options here */}
+          <Grid.Row>
+            <Grid.Column width={11}>
+              {/* Add edit options here */}
 
-            <h3>{this.props.edutitle}</h3>
-            <h3>{this.props.org}</h3>
-            <h4>From {this.props.from}</h4>
-            <h4>To {this.props.to}</h4>
-            <h5>{this.props.desc}</h5>
+              <h3>{this.props.jobtitle}</h3>
+              <h3>{this.props.org}</h3>
+              <h4>From {this.props.from}</h4>
+              <h4>To {this.props.to}</h4>
+              <h5>{this.props.desc}</h5>
+              <h5>{this.props.expiry}</h5>
 
-            <Modal
-              trigger={
-                <Button
-                  onClick={this.onClickVerification}
-                  primary
-                  // disabled={this.state.cert_state !== "Validated"}
-                >
-                  Verify
-                </Button>
-              }
-              closeIcon
-            >
-              <Header icon="question circle outline" content="Sign Document" />
-              <Modal.Content>
-                <h3>Are you sure you want to verify this document?</h3>
-                <h3>
-                  *** you have pay transaction fees with additional charges for
-                  certificated verification
-                </h3>
-              </Modal.Content>
-              <Modal.Actions>
-                <Button onClick={this.handleSignButtonClick} color="green">
-                  <Icon name="checkmark" /> Yes
-                </Button>
-              </Modal.Actions>
-            </Modal>
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <Step.Group ordered vertical size="tiny">
-              <Step completed={this.state.cert_state !== "Validate"}>
-                Requested
-              </Step>
-              <Step completed={this.state.cert_state === "Done"}>
-                Validated
-              </Step>
-            </Step.Group>
-          </Grid.Column>
+              <Button
+                Link
+                to="/verify"
+                primary
+                // disabled={this.state.cert_state !== "Validated"}
+              >
+                Verify
+              </Button>
+            </Grid.Column>
+            <Grid.Column width={5}>
+              <Step.Group ordered vertical size="tiny">
+                <Step completed={this.props.c_status !== "Validate"}>
+                  Requested
+                </Step>
+                <Step completed={this.props.c_status === "Done"}>
+                  Validated
+                </Step>
+              </Step.Group>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <DisplayVerification />
+          </Grid.Row>
         </Grid>
       </Segment>
     );

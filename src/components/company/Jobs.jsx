@@ -18,9 +18,9 @@ import {
   CardHeader,
   CardContent
 } from "semantic-ui-react";
-import ModalExampleScrollingContent from './JobModal';
+import ModalExampleScrollingContent from "./JobModal";
 
-import token from '../Abis'
+import token from "../Abis";
 import Portis from "@portis/web3";
 import Web3 from "web3";
 const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
@@ -75,7 +75,7 @@ class Jobs extends Component {
       .catch(err => console.log(err));
   };
 
-  shortlist = async (c,id) => {
+  shortlist = async (c, id) => {
     if (c.status === "Applied") {
       c.status = "Shortlisted";
     } else {
@@ -89,7 +89,7 @@ class Jobs extends Component {
       mode: "cors",
       body: JSON.stringify({
         status: c.status,
-        job_id:id
+        job_id: id
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -104,13 +104,30 @@ class Jobs extends Component {
     if (this.state.jobpostlist.length == 0) {
       return (
         <div>
-           <h1>Loading</h1>
-          <Modal trigger={<Button onClick={async()=>{await token.methods.approve1(sessionStorage.getItem("LoggedUser"),'0x27f2186329adB37458685C27E2DeB176ACFbc4f2',100).send({from:sessionStorage.getItem("LoggedUser")})
-                                                                        .on('transactionHash', function(hash){console.log(hash)})    
-        }}>Post Job</Button>} closeIcon>
-            <ModalExampleScrollingContent/>
+          <h1>Loading</h1>
+          <Modal
+            trigger={
+              <Button
+                onClick={async () => {
+                  await token.methods
+                    .approve1(
+                      sessionStorage.getItem("LoggedUser"),
+                      "0x27f2186329adB37458685C27E2DeB176ACFbc4f2",
+                      100
+                    )
+                    .send({ from: sessionStorage.getItem("LoggedUser") })
+                    .on("transactionHash", function(hash) {
+                      console.log(hash);
+                    });
+                }}
+              >
+                Post Job
+              </Button>
+            }
+            closeIcon
+          >
+            <ModalExampleScrollingContent />
           </Modal>
-         
         </div>
       );
     } else {
@@ -118,114 +135,142 @@ class Jobs extends Component {
       return (
         <div>
           <h1>Fossee</h1>
-          <Modal trigger={<Button onClick={async()=>{await token.methods.approve1(sessionStorage.getItem("LoggedUser"),'0x27f2186329adB37458685C27E2DeB176ACFbc4f2',100).send({from:sessionStorage.getItem("LoggedUser")})
-                                                                        .on('transactionHash', function(hash){console.log(hash)})    
-        }}>Post Job</Button>} closeIcon>
-            <ModalExampleScrollingContent/>
+          <Modal
+            trigger={
+              <Button
+                onClick={async () => {
+                  await token.methods
+                    .approve1(
+                      sessionStorage.getItem("LoggedUser"),
+                      "0x27f2186329adB37458685C27E2DeB176ACFbc4f2",
+                      100
+                    )
+                    .send({ from: sessionStorage.getItem("LoggedUser") })
+                    .on("transactionHash", function(hash) {
+                      console.log(hash);
+                    });
+                }}
+              >
+                Post Job
+              </Button>
+            }
+            closeIcon
+          >
+            <ModalExampleScrollingContent />
           </Modal>
-        <Container text>
-          <div style={{ marginTop: 100 }}>
-            {/* <Item.Group divided> */}
-            {this.state.jobpostlist.map(job => (
-              <Segment>
-                <Grid>
-                  <Grid.Row>
-                    <Grid.Column width={5}>
-                      <Label color="green">Job Id: {job.id}</Label>
-                    </Grid.Column>
-                    <Grid.Column width={6}>
-                      <Modal
-                        trigger={
-                          <Button
-                            color="red"
-                            onClick={async () => {
-                              await this.getJobApplications();
-                            }}
-                          >
-                            Candidates Applied
-                          </Button>
-                        }
-                      >
-                        <Segment>
-                          <List>
-                            {this.state.jobCandidateList
-                              .filter(el => el.job_id === job.id)
-                              .map(Candidate => (
-                                <List.Item key={job.id}>
-                                  <List.Header as="a">
-                                    {Candidate.first_name} {Candidate.last_name}
-                                  </List.Header>
-
-                                  <List.Description>
-                                    <Button
-                                      floated="right"
-                                      onClick={async () => {
-                                        return window.confirm(
-                                          "Are you sure you want to shortlist ?"
-                                        )
-                                          ? await this.shortlist(Candidate,job.id)
-                                          : false;
-                                      }}
-                                      disabled={
-                                        Candidate.status === "Shortlisted"
+          <Container text>
+            <div style={{ marginTop: 100 }}>
+              {/* <Item.Group divided> */}
+              {this.state.jobpostlist.map(job => (
+                <Segment>
+                  <Grid>
+                    <Grid.Row>
+                      <Grid.Column width={5}>
+                        <Label color="green">Job Id: {job.id}</Label>
+                      </Grid.Column>
+                      <Grid.Column width={6}>
+                        <Modal
+                          trigger={
+                            <Button
+                              color="red"
+                              onClick={async () => {
+                                await this.getJobApplications();
+                              }}
+                            >
+                              Candidates Applied
+                            </Button>
+                          }
+                        >
+                          <Segment>
+                            <List>
+                              {this.state.jobCandidateList
+                                .filter(el => el.job_id === job.id)
+                                .map(Candidate => (
+                                  <List.Item key={job.id}>
+                                    <List.Header
+                                      as="a"
+                                      href={
+                                        "/profileview/" + Candidate.candidate_id
                                       }
+                                      target="_blank"
                                     >
-                                      Short list
-                                    </Button>
-                                  </List.Description>
-                                </List.Item>
-                              ))}
-                          </List>
-                        </Segment>
-                      </Modal>
-                    </Grid.Column>
-                    <Grid.Column width={5} textAlign="right">
-                      <Label color="green"> {job.designation}</Label>
-                    </Grid.Column>
-                  </Grid.Row>
-                  <Divider />
+                                      {Candidate.first_name}{" "}
+                                      {Candidate.last_name}
+                                    </List.Header>
 
-                  <Grid.Row centered>
-                    <h2>
-                      {" "}
-                      <Label size="big" color="blue">
-                        Description
-                      </Label>
-                    </h2>
-                  </Grid.Row>
-                  <Grid.Row centered>{job.description}</Grid.Row>
-                  <Divider />
+                                    <List.Description>
+                                      <Button
+                                        floated="right"
+                                        onClick={async () => {
+                                          return window.confirm(
+                                            "Are you sure you want to shortlist ?"
+                                          )
+                                            ? await this.shortlist(
+                                                Candidate,
+                                                job.id
+                                              )
+                                            : false;
+                                        }}
+                                        disabled={
+                                          Candidate.status === "Shortlisted"
+                                        }
+                                      >
+                                        Short list
+                                      </Button>
+                                    </List.Description>
+                                  </List.Item>
+                                ))}
+                            </List>
+                          </Segment>
+                        </Modal>
+                      </Grid.Column>
+                      <Grid.Column width={5} textAlign="right">
+                        <Label color="green"> {job.designation}</Label>
+                      </Grid.Column>
+                    </Grid.Row>
+                    <Divider />
 
-                  <Grid.Row>
-                    <Grid.Column width={8}>
-                      <Label color="teal">Industry:</Label> {job.industry}{" "}
-                    </Grid.Column>
-                    <Grid.Column width={8}>
-                      <Label color="teal">Type:</Label> {job.type}{" "}
-                    </Grid.Column>
-                  </Grid.Row>
-                  <Grid.Row>
-                    <Grid.Column width={8}>
-                      <Label color="teal">Salary:</Label> {job.salary}{" "}
-                    </Grid.Column>
-                    <Grid.Column width={8}>
-                      <Label color="teal">Duration:</Label> {job.duration}{" "}
-                    </Grid.Column>
-                  </Grid.Row>
-                  <Divider fitted />
+                    <Grid.Row centered>
+                      <h2>
+                        {" "}
+                        <Label size="big" color="blue">
+                          Description
+                        </Label>
+                      </h2>
+                    </Grid.Row>
+                    <Grid.Row centered>{job.description}</Grid.Row>
+                    <Divider />
 
-                  <Grid.Row centered>
-                    <h3>
-                      <Label color="blue">Desired Skills:</Label>
-                    </h3>
-                  </Grid.Row>
-                  <Grid.Row centered>{job.skills}</Grid.Row>
-                </Grid>
-              </Segment>
-            ))}
-            {/* </Item.Group> */}
-          </div>
-        </Container>
+                    <Grid.Row>
+                      <Grid.Column width={8}>
+                        <Label color="teal">Industry:</Label> {job.industry}{" "}
+                      </Grid.Column>
+                      <Grid.Column width={8}>
+                        <Label color="teal">Type:</Label> {job.type}{" "}
+                      </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                      <Grid.Column width={8}>
+                        <Label color="teal">Salary:</Label> {job.salary}{" "}
+                      </Grid.Column>
+                      <Grid.Column width={8}>
+                        <Label color="teal">Duration:</Label> {job.duration}{" "}
+                      </Grid.Column>
+                    </Grid.Row>
+                    <Divider fitted />
+
+                    <Grid.Row centered>
+                      <h3>
+                        <Label color="blue">Desired Skills:</Label>
+                      </h3>
+                    </Grid.Row>
+                    <Grid.Row centered>{job.skills}</Grid.Row>
+                  </Grid>
+                </Segment>
+              ))}
+              {/* </Item.Group> */}
+            </div>
+          </Container>
         </div>
       );
     }
