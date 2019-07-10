@@ -66,3 +66,18 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+Steps to setup GethHired-
+1. Open remix.ethereum.org
+2. Copy all the smart contracts from the Smart-Contract repository and save them with the same name in the editor.
+3. Now, compile ExampleToken.sol and Escrow.sol
+4. First deploy ExampleToken and then copy contract address generated.
+5. Now, deploy Escrow.sol by pasting contract address of ExampleToken.
+6. Save the contract addresses of both the deployed contracts.
+7. Now, from remix IDE, copy the ABI of ExampleToken and Escrow account and save them for later.
+8. Now clone the Geth-HiredUi repository.
+9. Install npm.
+10. Move to GethHired folder and run npm install.
+11. Import the .sql file to create SQL database.
+12. Now, run the Server.js file, by typing node Server.js
+13. Similar is the process for running admin page.
