@@ -61,7 +61,7 @@ app.get("/Category/:wallet_address", function(req, res) {
 
 app.get("/ExperienceStatus/:swarm_id", function(req, res) {
   connection.query(
-    "select status from Experience where swarm_id=?",
+    "select status,txn_hash from Experience where swarm_id=?",
     [req.params.swarm_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
@@ -71,7 +71,7 @@ app.get("/ExperienceStatus/:swarm_id", function(req, res) {
 
 app.get("/EducationStatus/:swarm_id", function(req, res) {
   connection.query(
-    "select status from Education where swarm_id=?",
+    "select status,txn_hash from Education where swarm_id=?",
     [req.params.swarm_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
@@ -211,7 +211,7 @@ app.get("/SwarmID/:vr_id", function(req, res) {
 
 app.get("/VerificationID/:swarm_id", function(req, res) {
   connection.query(
-    "SELECT vr_id FROM Validation_Requests WHERE `swarm_id` =?",
+    "SELECT vr_id,company_id FROM Validation_Requests WHERE `swarm_id` =?",
     [req.params.swarm_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
