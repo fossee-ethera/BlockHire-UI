@@ -47,7 +47,7 @@
 
 ### Setting up MySQL database
 
-- Import the database.sql file to create SQL database or just paste contents of database.txt on your mysql terminal. 
+- Import the [database.sql](https://github.com/fossee-ethera/Geth-Hired-UI/blob/master/database.sql) file to create SQL database or just paste contents on your mysql terminal. 
 
   `mysqldump --databases gethdb > database.sql`
   
