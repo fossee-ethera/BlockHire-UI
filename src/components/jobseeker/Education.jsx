@@ -212,8 +212,8 @@ class Education extends Component {
             key={i}
             institution={listItem.institution}
             level={listItem.level}
-            from={listItem.from}
-            to={listItem.to}
+            from={listItem.from.split("T")[0]}
+            to={listItem.to.split("T")[0]}
             desc={listItem.description}
             c_status={listItem.status}
             swarmid={listItem.swarm_id}
@@ -281,7 +281,7 @@ class EditEducation extends Component {
   onClickValidate = async () => {
     //adding data to validation_requests table
     var url = "http://localhost:4000/Validation";
-    fetch(url, {
+    await fetch(url, {
       method: "POST", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({

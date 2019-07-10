@@ -18,8 +18,8 @@ app.use(
 
 const connection = mysql.createConnection({
   host: "localhost",
-  user: "test",
-  password: "test",
+  user: "root",
+  password: "mysql",
   database: "gethdb"
 });
 
