@@ -169,9 +169,11 @@ class EditExperience extends Component {
 
               <Button
                 as={Link}
-                to={`profileview/verify/${this.props.user}`}
+                //to={`profileview/verify/${this.props.user}`}
+                to={`verify/${this.props.swarmid}/experience/`}
+                target={"_blank"}
                 primary
-                // disabled={this.state.cert_state !== "Validated"}
+              // disabled={this.state.cert_state !== "Validated"}
               >
                 Verify
               </Button>

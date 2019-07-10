@@ -9,11 +9,15 @@ import CompanyProfile from "./company/EditProfilePage";
 import MainJobSeeker from "./jobseeker/MainJobSeeker";
 import MainCompany from "./company/MainCompany";
 import MinimalProfileView from "./company/MinimalProfileView";
+
+import CertificateVerification from "./company/CertificateVerification";
+
 // to not get confused with the History component in react-router.
 
 const Main = () => (
   <Router>
     <Switch>
+	<Route path="/profileview/verify/:cswarmid/:ccategory" 		component={CertificateVerification} />
       <Route path="/profileview/:user_id" component={MinimalProfileView} />
       <Route exact path="/jobs" component={MainCompany} />
       <Route exact path="/account" component={MainCompany} />

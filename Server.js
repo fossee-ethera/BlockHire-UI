@@ -18,8 +18,8 @@ app.use(
 
 const connection = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "mysql",
+  user: "test",
+  password: "test",
   database: "gethdb"
 });
 
@@ -203,6 +203,16 @@ app.get("/SwarmID/:vr_id", function(req, res) {
   connection.query(
     "SELECT swarm_id FROM Validation_Requests WHERE `vr_id` =?",
     [req.params.vr_id],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/VerificationID/:swarm_id", function(req, res) {
+  connection.query(
+    "SELECT vr_id FROM Validation_Requests WHERE `swarm_id` =?",
+    [req.params.swarm_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
     }
