@@ -1,11 +1,15 @@
 import { Button, Header, Icon, Image, Modal } from 'semantic-ui-react';
 import React, { Component } from 'react';
 import { Form,Segment } from 'semantic-ui-react';
-import token from '../Abis'
+
 import Portis from "@portis/web3";
 import Web3 from "web3";
+
+import token from '../Abis'
 const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
 const web3 = new Web3(portis.provider);
+
+
 
 const ModalExampleScrollingContent = () => (
 <Segment>
@@ -52,7 +56,7 @@ class FormExampleSubcomponentControl extends Component {
     
 
     
-        handleSubmit = async event =>{
+        handleSubmit =  event =>{
         event.preventDefault();
         var url = "http://localhost:4000/JobPost";
 
@@ -77,7 +81,7 @@ class FormExampleSubcomponentControl extends Component {
         .then(res => res.body)
         .then(response => console.log("Success:", JSON.stringify(response)))
         .then(token.methods.transferFrom1(sessionStorage.getItem("LoggedUser"),'0x27f2186329adB37458685C27E2DeB176ACFbc4f2',100).send({from:sessionStorage.getItem("LoggedUser")}))
-        .on('transactionHash', function(hash){console.log(hash)})
+       
         .catch(error => console.error("Error:", error));
     
     };

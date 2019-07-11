@@ -163,7 +163,7 @@ console.log(
     } catch (e) {
       console.log(e);
     }
-    singner_account_add = "0x5ec74ed675a04c5752bb92ccf80d43eeabfe984a";
+    //singner_account_add = "0x5ec74ed675a04c5752bb92ccf80d43eeabfe984a";
     console.log("signer :" + singner_account_add);
     this.setState({
       signature_signer_add: singner_account_add

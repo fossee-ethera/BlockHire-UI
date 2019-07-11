@@ -111,7 +111,7 @@ class Validation extends Component {
   };
 
   getValidationRequests = () => {
-    var url = "http://localhost:4000/ValidationRequests/"; //+sessionState.getItem("LoggedUser");
+    var url = "http://localhost:4000/ValidationRequests/?add="+sessionStorage.getItem("LoggedUser"); //+sessionState.getItem("LoggedUser");
     fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ validationList: response.data }))
@@ -292,7 +292,9 @@ class DocSign extends Component {
     })
       .then(res => res.body)
       .then(response => console.log("Success:", JSON.stringify(response)))
+      .then(token2.methods.reject(this.props.match.params.vrID).send({from:sessionStorage.getItem("LoggedUser")}))
       .catch(error => console.error("Error:", error));
+    //console.log(this.props.match.params.vrID);
   };
 
   getCategory = () => {
@@ -357,24 +359,22 @@ class DocSign extends Component {
 
     await this.reqSignature();
 
+    var url = "http://localhost:4000/AcceptDoc/" + this.state.swarmId;
     console.log(this.props.match.params.vrID);
+    console.log("This is the final signature-");
     console.log(this.state.filesignature);
+    var temp = this.state.category;
     await token2.methods.Validate(this.props.match.params.vrID,this.state.filesignature).send({from: sessionStorage.getItem("LoggedUser"), gasLimit:8000000})
                           .on('transactionHash',function(hash) {
                             console.log(hash)
-                            hashStore=hash
-                          })
-    //console.log("from state :" + this.state.filesignature);
-
-    //mysql databse update
-    var url = "http://localhost:4000/AcceptDoc/" + this.state.swarmId;
+                            
 
     fetch(url, {
       method: "POST", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
-        category: this.state.category,  
-        txn_hash: hashStore
+        category: temp,  
+        txn_hash: hash
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -382,7 +382,29 @@ class DocSign extends Component {
     })
       .then(res => res.body)
       .then(response => console.log("Success:", JSON.stringify(response)))
+      .then(console.log('DAta stored'))
       .catch(error => console.error("Error:", error));
+                          })
+    // //console.log("from state :" + this.state.filesignature);
+
+    // //mysql databse update
+    console.log('The transaction hash beign stored is-');
+    console.log(hashStore);
+
+    // fetch(url, {
+    //   method: "POST", // or 'PUT'
+    //   mode: "cors",
+    //   body: JSON.stringify({
+    //     category: this.state.category,  
+    //     txn_hash: hashStore
+    //   }), // data can be `string` or {object}!
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   }
+    // })
+    //   .then(res => res.body)
+    //   .then(response => console.log("Success:", JSON.stringify(response)))
+    //   .catch(error => console.error("Error:", error));
   };
   render() {
     if (this.props.match.url != URL) {

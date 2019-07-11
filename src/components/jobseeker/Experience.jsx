@@ -191,7 +191,6 @@ class Experience extends Component {
                 />
                 <Form.Input
                   type="file"
-                  label="Certificate"
                   name="file"
                   onChange={this.onFileChange}
                 />
@@ -330,8 +329,8 @@ class EditExperience extends Component {
 
             <h3>{this.props.jobtitle}</h3>
             <h3>{this.props.org}</h3>
-            <h4>From {this.props.from.split("T")[0]}</h4>
-            <h4>To {this.props.to.split("T")[0]}</h4>
+            <h4>From {this.props.from}</h4>
+            <h4>To {this.props.to}</h4>
             <h5>{this.props.desc}</h5>
             <h5>{this.props.expiry}</h5>
             <Button

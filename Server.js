@@ -19,8 +19,8 @@ app.use(
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "mysql",
-  database: "gethdb"
+  password: "password",
+  database: "GethHired"
 });
 
 connection.connect(function(err) {
@@ -71,7 +71,7 @@ app.get("/ExperienceStatus/:swarm_id", function(req, res) {
 
 app.get("/EducationStatus/:swarm_id", function(req, res) {
   connection.query(
-    "select status,txn_hash from Education where swarm_id=?",
+    "select status from Education where swarm_id=?",
     [req.params.swarm_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
@@ -194,7 +194,7 @@ app.put("/EditCompany/:company_id", function(req, res) {
 //   });
 
 app.get("/ValidationRequests", function(req, res) {
-  connection.query("SELECT * FROM Validation_Requests", function(err, results) {
+  connection.query("SELECT * FROM Validation_Requests where company_id=?",[req.query.add], function(err, results) {
     err ? res.send(err) : res.json({ data: results });
   });
 });
@@ -211,7 +211,7 @@ app.get("/SwarmID/:vr_id", function(req, res) {
 
 app.get("/VerificationID/:swarm_id", function(req, res) {
   connection.query(
-    "SELECT vr_id,company_id FROM Validation_Requests WHERE `swarm_id` =?",
+    "SELECT vr_id FROM Validation_Requests WHERE `swarm_id` =?",
     [req.params.swarm_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
