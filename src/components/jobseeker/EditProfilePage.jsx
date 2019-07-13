@@ -1,3 +1,4 @@
+//main profile page for jonseeker where he/she edit personal infor, upload certificates
 import React, { Component } from "react";
 import "../styles/EditProfilePage.css";
 import {

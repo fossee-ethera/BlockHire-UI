@@ -1,3 +1,5 @@
+// this file contains all main routes for URL 
+
 import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Switch, Route } from "react-router";
@@ -17,8 +19,11 @@ import CertificateVerification from "./company/CertificateVerification";
 const Main = () => (
   <Router>
     <Switch>
+      {/* for certificate verification page */}
 	<Route path="/profileview/verify/:cswarmid/:ccategory" 		component={CertificateVerification} />
+  {/* for profile view of one user, only you need his/her user_id/wallet address */}
       <Route path="/profileview/:user_id" component={MinimalProfileView} />
+      {/* route for jobs */}
       <Route exact path="/jobs" component={MainCompany} />
       <Route exact path="/account" component={MainCompany} />
       {/* <Route path="/validation" component={MainCompany} /> */}

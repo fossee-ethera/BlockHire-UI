@@ -1,3 +1,4 @@
+//this page is the home page for company,,,this page contrain profile of company
 import React, { Component } from "react";
 import "../styles/EditProfilePage.css";
 import {
@@ -21,7 +22,7 @@ class EditProfilePage extends Component {
   async componentDidMount() {
     await this.getUserInfo();
   }
-
+  //function for getting the company info from mysql
   getUserInfo = _ => {
     //  var url = "http://localhost:4000/Company/" + this.props.location.state[0].wallet_add;
     var url =
@@ -57,7 +58,7 @@ class EditProfilePage extends Component {
     }
   }
 }
-
+//this part is for editing the company infor
 class AboutContainer extends Component {
   constructor(props) {
     super(props);

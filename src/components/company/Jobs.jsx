@@ -1,3 +1,4 @@
+//this page show job and allow to post jobs
 import React, { Component } from "react";
 import {
   Label,
@@ -18,6 +19,7 @@ import {
   CardHeader,
   CardContent
 } from "semantic-ui-react";
+
 import ModalExampleScrollingContent from "./JobModal";
 
 import token from "../Abis";

@@ -1,3 +1,4 @@
+//this page is experice model for add experience and upload certificates
 import React, { Component } from "react";
 import {
   Button,
@@ -12,6 +13,7 @@ import {
   Icon,
   Input
 } from "semantic-ui-react";
+//swarm bzz API for storage calls
 import BzzAPI from "@erebos/api-bzz-browser";
 import token2 from "../Abis2";
 import Portis from "@portis/web3";
@@ -89,8 +91,6 @@ class Experience extends Component {
     } else {
       alert("File not uploaded");
     }
-
-    // window.location.reload();
   };
 
   handleChange = e => {

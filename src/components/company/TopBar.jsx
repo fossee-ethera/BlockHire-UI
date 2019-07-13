@@ -1,3 +1,4 @@
+//top menu bar contains routes, actions for each tab in company profile page
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import {

@@ -1,3 +1,4 @@
+//this page holde validation page where company/validator sign certificated base on their genuiness.
 import React, { Component } from "react";
 import {
   Container,
@@ -11,7 +12,7 @@ import {
   Modal
 } from "semantic-ui-react";
 
-import * as crypto from "crypto-js";
+import crypto from "crypto-js";
 import Portis from "@portis/web3";
 import Web3 from "web3";
 import EthSigUtil from "eth-sig-util";
@@ -19,10 +20,9 @@ import token2 from '../Abis2';
 import { Switch, Route, Link, BrowserRouter as Router } from "react-router-dom";
 import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
-import token from "../Abis";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
-}/pdf.worker.js`;
+  }/pdf.worker.js`;
 
 const portis = new Portis("61f1e9b2-488e-4a59-a3e3-24e855799d8d", "ropsten");
 const web3 = new Web3(portis.provider);
@@ -56,7 +56,7 @@ class Validation extends Component {
   }
 
   getUserName = () => {
-    for (var i = 0; i < this.state.validationList.length; i++) {}
+    for (var i = 0; i < this.state.validationList.length; i++) { }
   };
 
   getStatus = async () => {
@@ -111,7 +111,7 @@ class Validation extends Component {
   };
 
   getValidationRequests = () => {
-    var url = "http://localhost:4000/ValidationRequests/?add="+sessionStorage.getItem("LoggedUser"); //+sessionState.getItem("LoggedUser");
+    var url = "http://localhost:4000/ValidationRequests/?add=" + sessionStorage.getItem("LoggedUser"); //+sessionState.getItem("LoggedUser");
     fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ validationList: response.data }))
@@ -236,7 +236,7 @@ class DocSign extends Component {
       category: "",
       fileHash: "",
       filesignature: "",
-      txhash:""
+      txhash: ""
     };
     this.reqSignature = this.reqSignature.bind(this);
 
@@ -250,32 +250,31 @@ class DocSign extends Component {
     this.getSwarmId();
     URL = this.props.match.url;
   }
-
+  //pdf render function sets the number of pages in pdf
   onDocumentLoadSuccess = ({ numPages }) => {
     this.setState({ pages: numPages });
   };
   onPageRenderSuccess = page => console.log("Rendered a page", page);
 
+  //this function get the file from swarm in base64 format
   getFileRaw = () => {
     var url = "https://swarm-gateways.net/bzz:/" + this.state.swarmId;
     console.log("ye hai " + url);
-
     fetch(url)
       .then(response => response.text())
       .then(text => this.setState({ getFile: text }))
       .catch(err => console.log(err));
   };
-
+  //fetch the swarm id from verification_request id
   getSwarmId = () => {
     var url = "http://localhost:4000/SwarmID/" + this.props.match.params.vrID;
-
     fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ swarmId: response.data[0].swarm_id }))
       .then(this.getFileRaw)
       .catch(err => console.log(err));
   };
-
+  //this function handerls reject button call
   handleRejectButtonClick = e => {
     e.preventDefault();
     var url = "http://localhost:4000/RejectDoc" + this.state.swarmId;
@@ -292,11 +291,11 @@ class DocSign extends Component {
     })
       .then(res => res.body)
       .then(response => console.log("Success:", JSON.stringify(response)))
-      .then(token2.methods.reject(this.props.match.params.vrID).send({from:sessionStorage.getItem("LoggedUser")}))
+      .then(token2.methods.reject(this.props.match.params.vrID).send({ from: sessionStorage.getItem("LoggedUser") }))
       .catch(error => console.error("Error:", error));
     //console.log(this.props.match.params.vrID);
   };
-
+  //fetch the certificate category from verification_request id
   getCategory = () => {
     var url =
       "http://localhost:4000/getCategory/" + this.props.match.params.vrID;
@@ -307,7 +306,7 @@ class DocSign extends Component {
       .catch(err => console.log(err));
   };
 
-  //function go to verifictiona page
+  //function go to verifictiona of signature
   async checkValidityOfSignature(hs, sign) {
     console.log("hs " + hs);
     console.log("sign :" + sign);
@@ -325,26 +324,28 @@ class DocSign extends Component {
 
     console.log(accounts[0]);
     console.log("hash in sign :" + this.state.fileHash);
-    // const messageHex =
-    // "0x" + (new Buffer(h, "utf8").toString("hex"));
+    // const messageHex = "0x" + (new Buffer(h, "utf8").toString("hex"));
+
     var messageHex = "0x" + this.state.fileHash;
+
     console.log("Msg :" + messageHex);
+    //this function call personal signature method from web3 provider to sign the hex message
     const signedMessage = await web3.currentProvider.send("personal_sign", [
       messageHex,
       accounts[0]
     ]);
     console.log("sign :" + signedMessage);
     this.setState({ filesignature: signedMessage });
-    // return signedMessage;
 
-    //signature validation part
+
+    //only for checking the signature does not effect anything
     console.log("signer account " + accounts[0]);
     this.checkValidityOfSignature(
       this.state.fileHash,
       this.state.filesignature
     );
   }
-  handleSignButtonClick =async e => {
+  handleSignButtonClick = async e => {
     //document sign code
     //file hash code
     var { getFile } = this.state;
@@ -355,8 +356,8 @@ class DocSign extends Component {
     var hs = sha.finalize();
     console.log("hash :" + hs);
     this.setState({ fileHash: hs });
-    //sign request to portis
 
+    //sign request to portis
     await this.reqSignature();
 
     var url = "http://localhost:4000/AcceptDoc/" + this.state.swarmId;
@@ -364,47 +365,29 @@ class DocSign extends Component {
     console.log("This is the final signature-");
     console.log(this.state.filesignature);
     var temp = this.state.category;
-    await token2.methods.Validate(this.props.match.params.vrID,this.state.filesignature).send({from: sessionStorage.getItem("LoggedUser"), gasLimit:8000000})
-                          .on('transactionHash',function(hash) {
-                            console.log(hash)
-                            
+    await token2.methods.Validate(this.props.match.params.vrID, this.state.filesignature).send({ from: sessionStorage.getItem("LoggedUser"), gasLimit: 8000000 })
+      .on('transactionHash', function (hash) {
+        console.log(hash)
 
-    fetch(url, {
-      method: "POST", // or 'PUT'
-      mode: "cors",
-      body: JSON.stringify({
-        category: temp,  
-        txn_hash: hash
-      }), // data can be `string` or {object}!
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => res.body)
-      .then(response => console.log("Success:", JSON.stringify(response)))
-      .then(console.log('DAta stored'))
-      .catch(error => console.error("Error:", error));
-                          })
-    // //console.log("from state :" + this.state.filesignature);
 
-    // //mysql databse update
+        fetch(url, {
+          method: "POST", // or 'PUT'
+          mode: "cors",
+          body: JSON.stringify({
+            category: temp,
+            txn_hash: hash
+          }), // data can be `string` or {object}!
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+          .then(res => res.body)
+          .then(response => console.log("Success:", JSON.stringify(response)))
+          .then(console.log('DAta stored'))
+          .catch(error => console.error("Error:", error));
+      })
     console.log('The transaction hash beign stored is-');
     console.log(hashStore);
-
-    // fetch(url, {
-    //   method: "POST", // or 'PUT'
-    //   mode: "cors",
-    //   body: JSON.stringify({
-    //     category: this.state.category,  
-    //     txn_hash: hashStore
-    //   }), // data can be `string` or {object}!
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   }
-    // })
-    //   .then(res => res.body)
-    //   .then(response => console.log("Success:", JSON.stringify(response)))
-    //   .catch(error => console.error("Error:", error));
   };
   render() {
     if (this.props.match.url != URL) {
@@ -471,17 +454,6 @@ class DocSign extends Component {
     );
   }
 }
-
-//after clicking listItem routing must happen
-
-// class DisplayCertificate extends Component {
-//   state = {};
-//   render() {
-//     return (
-
-//     );
-//   }
-// }
 
 const DisplayDoneCertificate = ({ match }) => (
   <Segment>

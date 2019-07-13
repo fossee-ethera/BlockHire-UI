@@ -1,3 +1,4 @@
+//the profile page edit dialog
 import React, { Component } from "react";
 import {
   Button,
@@ -13,7 +14,7 @@ export default class EditAbout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      file: "https://react.semantic-ui.com/images/avatar/large/rachel.png",
+      file: "https://react.semantic-ui.com/images/avatar/large/rachel.png",//for now this image is static one
       fname: this.props.pass.first_name,
       lname: this.props.pass.last_name,
       bio: this.props.pass.about,

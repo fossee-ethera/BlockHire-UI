@@ -1,4 +1,4 @@
-//after user logs in
+//after user logs in this page defines routes for navigations
 import { BrowserRouter as Router } from "react-router-dom";
 import React from "react";
 import TopBar from "./TopBar";

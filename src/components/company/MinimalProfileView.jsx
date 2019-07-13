@@ -1,3 +1,5 @@
+//this page show profile of candidate like a resume where any one can validate candidate certificates
+//when he/she clicks on verfy button he/she redirect to verification page
 import React, { Component } from "react";
 import "../styles/EditProfilePage.css";
 import {
@@ -28,18 +30,12 @@ class MinimalProfileView extends Component {
   }
 
   async componentDidMount() {
-    //console.log(sessionStorage.getItem("LoggedUser"));
-    //console.log(this.props.match.params.userid)
     await this.getUserInfo();
   }
 
   getUserInfo = _ => {
     console.log("Session user");
-    //console.log(sessionStorage.getItem("getUser"));
-
     var url = "http://localhost:4000/About/" + this.state.user;
-    // "http://localhost:4000/About/" + this.props.location.state[0].wallet_add;
-    //"http://localhost:4000/About/" + this.props.match.params.userid;
     fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ about: response.data }))
@@ -51,9 +47,7 @@ class MinimalProfileView extends Component {
       <div>
         <Container>
           <MinimalAboutContainer passed={this.state.about} />
-
           <MinimalExperience uid={this.state.user} />
-          {/* <Experience />*/}
           <MinimalEducation uid={this.state.user} />
         </Container>
       </div>
@@ -131,7 +125,6 @@ class MinimalExperience extends Component {
 class EditExperience extends Component {
   state = { cert_state: "Validate", swarmId: "", category: "Experience" };
 
-  //check from database
   async componentDidMount() {
     await this.setState({
       swarmId: this.props.swarmid
@@ -149,8 +142,6 @@ class EditExperience extends Component {
       .catch(err => console.log(err));
   };
 
-  //checking the ceritificate data
-  onClickVerification = () => {};
 
   render() {
     return (
@@ -169,7 +160,6 @@ class EditExperience extends Component {
 
               <Button
                 as={Link}
-                //to={`profileview/verify/${this.props.user}`}
                 to={`verify/${this.props.swarmid}/experience/`}
                 target={"_blank"}
                 primary
@@ -253,7 +243,6 @@ class MinimalEducation extends Component {
 class EditEducation extends Component {
   state = { cert_state: "Validate", swarmId: "", category: "Experience" };
 
-  //check from database
   async componentDidMount() {
     await this.setState({
       swarmId: this.props.swarmid
@@ -271,16 +260,12 @@ class EditEducation extends Component {
       .catch(err => console.log(err));
   };
 
-  //checking the ceritificate data
-  onClickVerification = () => {};
-
   render() {
     return (
       <Segment>
         <Grid>
           <Grid.Row>
             <Grid.Column width={11}>
-              {/* Add edit options here */}
 
               <h3>{this.props.jobtitle}</h3>
               <h3>{this.props.org}</h3>

@@ -1,12 +1,12 @@
 import Portis from "@portis/web3";
 import Web3 from "web3";
 
-
+//first parameter is the portis registered project key...2 nd paramera is the newkork you want to communicate with
 const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
-
+//sets portis as current web3 provider
 const web3 = new Web3(portis.provider);
 
-
+//this is the ABI of the deployed contract
 var abi = [
 	{
 		"constant": false,
@@ -164,6 +164,7 @@ var abi = [
 		"type": "function"
 	}
 ];
+//this creates the contreact object out of ABI and contract address ....which letter use to call contact functions/transactions
 var token2 = new web3.eth.Contract(abi, "0x674ffee4c12b8bdc78f4cf5bd11d4bf3e9e8625f");
 
 

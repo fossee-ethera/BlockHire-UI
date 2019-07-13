@@ -1,24 +1,23 @@
+//home page for site
+
 import React, { Component } from "react";
 import "./styles/HomePage.css";
 import {
   Button,
   Container,
-  Divider,
   Grid,
   Header,
   Icon,
-  Image,
   List,
-  Card,
   Responsive,
   Segment,
-  Sidebar,
   Transition,
-  CardContent
 } from "semantic-ui-react";
-import { withRouter } from "react-router-dom";
+//for portis connectivity
 import Portis from "@portis/web3";
+//for web3 import
 import Web3 from "web3";
+//for smartcontract calls
 import token from "./Abis";
 
 const square = { width: 250, height: 250 };
@@ -26,11 +25,11 @@ const square = { width: 250, height: 250 };
 const portis = new Portis("9928268e-3ccb-4ac4-a8d8-3fc01ec39196", "ropsten");
 const web3 = new Web3(portis.provider);
 
-const getWidth = () => {
-  const isSSR = typeof window === "undefined";
+// const getWidth = () => {
+//   const isSSR = typeof window === "undefined";
 
-  return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth;
-};
+//   return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth;
+// };
 
 class HomePage extends Component {
   constructor(props) {
@@ -41,7 +40,7 @@ class HomePage extends Component {
       category: ""
     };
   }
-
+  //check user type and redirect to his page
   onHandleClick(text, name) {
     console.log("wallet...............");
     console.log(text);
@@ -141,6 +140,7 @@ class HomePage extends Component {
                   <Button
                     primary
                     type="button"
+                    // this fuction check login status of current user , if user already logged in then he redirects to respective pages.
                     onClick={async () => {
                       var candidateAddress = await portis.provider.enable();
                       console.log(candidateAddress[0]);
@@ -151,11 +151,6 @@ class HomePage extends Component {
                           String(candidateAddress[0]),
                           "JobSeeker"
                         );
-                        // this.props.history.push(
-                        //   "/JobSeekerRegistration",
-                        //   //{},
-                        //   [this.state]
-                        // );
                       }
                     }}
                   >
@@ -183,12 +178,6 @@ class HomePage extends Component {
                           String(companyAddress[0]),
                           "Company"
                         );
-                        // withRouter(({ history, location }) =>
-                        //   this.props.history.push(
-                        //     "/CompanyRegistration",
-                        //     location.state
-                        //   )
-                        // );
                       }
                     }}
                   >
@@ -245,17 +234,16 @@ const HeaderFooter = () => (
               <List link inverted>
                 <List.Item as="a">Sitemap</List.Item>
                 <List.Item as="a">Contact Us</List.Item>
-                <List.Item as="a">Religious Ceremonies</List.Item>
-                <List.Item as="a">Gazebo Plans</List.Item>
+                <List.Item as="a">what is FOSSEE</List.Item>
+                <List.Item as="a">White paper</List.Item>
               </List>
             </Grid.Column>
             <Grid.Column width={8}>
               <Header as="h4" inverted>
-                Footer Header
+                This is all for Geth-Hire
               </Header>
               <p>
-                Extra space for a call to action inside the footer that could
-                help re-engage users.
+                This is an beta site, so if anything goes wrong then please rise an issu in github repo. We try our best to solve those issues as soon as possiable
               </p>
             </Grid.Column>
           </Grid.Row>

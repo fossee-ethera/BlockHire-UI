@@ -1,7 +1,10 @@
+
+//verfication page for certificates
+
 import React, { Component } from "react";
-import EthSigUtil from "eth-sig-util";
-import { Document, Page } from "react-pdf";
-import { pdfjs } from "react-pdf";
+import EthSigUtil from "eth-sig-util";//for signature check 
+import { Document, Page } from "react-pdf";//fro showing pdf
+import { pdfjs } from "react-pdf";//pdf componentes
 import {
   Progress,
   Icon,
@@ -11,13 +14,14 @@ import {
   Container,
   List
 } from "semantic-ui-react";
+//hash calculation library
 import crypto from "crypto-js";
-
+//for smart contract call
 import token2 from "../Abis2";
-
+//setting the pdf render worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${
   pdfjs.version
-}/pdf.worker.js`;
+  }/pdf.worker.js`;
 
 class CertificateVerification extends Component {
   constructor(props) {
@@ -53,6 +57,7 @@ class CertificateVerification extends Component {
     this.setState(prevState => ({
       percent: prevState.percent >= 100 ? 0 : prevState.percent + 20
     }));
+
   obtainEducationStatus = () => {
     var url = "http://localhost:4000/Education/" + this.state.swarmid;
     console.log(url);
@@ -73,25 +78,25 @@ class CertificateVerification extends Component {
       .catch(err => console.log(err));
     this.increment();
     setTimeout(
-      function() {
+      function () {
         this.obtainExprienceStatus();
       }.bind(this),
       1500
     );
   };
 
-  //setp 2 get the certificate status from MYSQL +20%
+  //setp 2 get the certificate status,verification_request id from MYSQL +20%
   obtainExprienceStatus = async () => {
     var url = "http://localhost:4000/ExperienceStatus/" + this.state.swarmid;
     console.log(url);
     fetch(url)
       .then(response => response.json())
       .then(response => {
-console.log(
+        console.log(
           "status: " + response.data[0].status + " || " + response.data[0].txn_hash
         );
         this.setState({ cert_status: response.data[0].status });
-        this.setState({ cert_txn_hash: ""+response.data[0].txn_hash });
+        this.setState({ cert_txn_hash: "" + response.data[0].txn_hash });
       })
       .catch(err => console.log(err));
 
@@ -110,7 +115,7 @@ console.log(
 
     this.increment();
     setTimeout(
-      function() {
+      function () {
         this.getFileHash();
       }.bind(this),
       2000
@@ -120,6 +125,7 @@ console.log(
   //setp 3 get the hash of certificate +20%
   getFileHash = async () => {
     console.log("Cert Data :" + this.state.cert_data);
+    //progressing hash usgin SHA256 algorithm
     var sha = crypto.algo.SHA256.create();
     for (var i = 0; i < this.state.cert_data; i = i + 100000) {
       sha.update(this.state.cert_data.slice(i, i + 100000));
@@ -134,8 +140,6 @@ console.log(
   //setp 4 get the certificate signature from smart contract +20%
   getFilesignature = async () => {
     //this functino call smart contract for cerificate signatire
-    //for now this is static one
-
     var sig = await token2.methods
       .getSign(this.state.vr_id)
       .call({ from: sessionStorage.getItem("LoggedUser") });
@@ -154,7 +158,7 @@ console.log(
     var s = this.state.cert_signature;
     console.log("hs " + h);
     console.log("sign :" + s);
-    //this part will work when you provide this with valid signature
+    //this part will work when you provide this with valid signature and its returns signer address
     try {
       var singner_account_add = EthSigUtil.recoverPersonalSignature({
         data: "0x" + h,
@@ -163,7 +167,7 @@ console.log(
     } catch (e) {
       console.log(e);
     }
-    //singner_account_add = "0x5ec74ed675a04c5752bb92ccf80d43eeabfe984a";
+    //"0x5ec74ed675a04c5752bb92ccf80d43eeabfe984a";//account address will be something like this
     console.log("signer :" + singner_account_add);
     this.setState({
       signature_signer_add: singner_account_add

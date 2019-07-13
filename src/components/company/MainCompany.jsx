@@ -1,4 +1,4 @@
-//after company logs in
+//after company logs in this page defines routes where company redirected to
 import { BrowserRouter as Router } from "react-router-dom";
 import React from "react";
 import TopBar from "./TopBar";

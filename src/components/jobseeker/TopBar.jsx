@@ -1,3 +1,4 @@
+//contains topbar actions in jobseeker page
 import React, { Component } from "react";
 import "../styles/TopBar.css";
 import { Link } from "react-router-dom";
