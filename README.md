@@ -1,5 +1,31 @@
 # Geth-Hired
 
+### Purpose
+
+The main purpose of the product is to help individuals to make their professional profile to showcase their education, achievements, experiences where each certificate can be validated to prove their genuineness from respective organizations.
+The other aspect of this product is to provide companies/recruiters a platform where they can post their jobs and get the most authentic, legitimate, valid candidates suited as per their requirements in easier, faster and cost-effective ways.     
+
+### Product Scope
+
+- Easy profile building where anyone can showcase their true achievements with proper validation credential from certificate respective authorities and easy verification of certificates.
+- To provide a platform for job searching, job applying in more secure transparent while considering candidate privacy.
+- For recruiters to post jobs easily and come across verified genuine legitimate candidates.
+- Incentives for certificate issuer/ validators of certificate on validate certificates and store signature credentials then in most secure, reliable, immutable way.
+- The main feature which makes it different from other job portal is that recruiters can verify shortlisted candidates in just one click as the certificates are verified beforehand from their respective authority. 
+- User has control over his/her sensitive data like contact information, avoiding the misuse of user information.
+
+### Product Functions
+
+- There are two primary roles present in the system - a job seeker, validator/recruiter. The transactions happen in the form of tokens on the system.
+- Candidate is onboarded on the platform and rewarded tokens on registering.
+- The certificates and achievements uploaded are then requested for validation by The secondary roles being the validator, recruiter, administrator.the candidate which consumes tokens. 
+- The administrator forwards these requests to authentic authorities for signing. (This can be done on-chain or off-application but in this release it is on-application)   
+- The validators sign and rewarded with tokens. They can either sign or reject the incoming request. The status is stored on the database. 
+- After validating all the uploaded certificates, a candidate is eligible to apply for the job. 
+- Companies/recruiters post the jobs and get a listing of validated profiles. 
+- They can verify these profiles on the blockchain. 
+
+
 ## Tech Stack
 
 - Solidity 0.5.x | Smart contracts
