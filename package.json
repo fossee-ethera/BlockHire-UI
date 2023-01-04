@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@erebos/swarm-browser": "^0.8.1",
-    "@portis/web3": "^2.0.0-beta.31",
+    "@portis/web3": "^4.0.7",
     "@react-pdf/renderer": "^1.6.3",
     "base-64": "^0.1.0",
     "body-parser": "^1.19.0",
